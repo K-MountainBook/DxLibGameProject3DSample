@@ -8,6 +8,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	float anim_totaltime, playtime = 0.0f;
 	int key;
 	VECTOR pos = VGet(640.0f, 280.0f, -400.0f);
+	VECTOR cpos = VGet(600.0f,600.0f,-400.0f);
+	VECTOR ctgt = VGet(600.0f, 300.0f, -400.0f);
 	bool running = false;
 
 
@@ -30,17 +32,26 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	// フレームレート調整用カウンタ（ミリ秒
 	int frameRateAdjCounter;
 
-
+	// モデルの読み込み
 	model1 = MV1LoadModel(L"Res\\Character\\Player\\PC.mv1");
+	// アニメの読み込み（待機モーション）
 	anim_nutral = MV1LoadModel(L"Res\\Character\\Player\\Anim_Neutral.mv1");
+	// アニメの読み込み（走りモーション）
 	anim_run = MV1LoadModel(L"Res\\Character\\Player\\Anim_Run.mv1");
+	// アニメーションのアタッチ（待機モーション
 	attachidx = MV1AttachAnim(model1, 0, anim_nutral);
+	// アニメーションの総再生時間を取得
 	anim_totaltime = MV1GetAttachAnimTotalTime(model1, attachidx);
+	// モデルの"root"フレームを取得
 	rootflm = MV1SearchFrame(model1, L"root");
+	// 単位行列の初期値を取得し移動しないようにする。
 	MV1SetFrameUserLocalMatrix(model1, rootflm, MGetIdent());
 
 	// 書き込み先をバックバッファに設定
 	SetDrawScreen(DX_SCREEN_BACK);
+
+	// カメラの設定
+	SetCameraPositionAndTargetAndUpVec(cpos, ctgt, VGet(0.0f, 0.0f, 1.0f));
 
 	if (model1 == -1) {
 		return -1;
@@ -50,7 +61,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	while (ProcessMessage() == 0 && CheckHitKey(KEY_INPUT_ESCAPE) == 0) {
 		frameRateAdjCounter = GetNowCount();
 
+		// アニメの再生時間を加算する
 		playtime += 0.5f;
+		// トータル時間を超過した場合リセットする
 		if (playtime > anim_totaltime) {
 			playtime = 0.0f;
 		}
@@ -97,12 +110,13 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 		MV1SetRotationXYZ(model1, VGet(0.0f, DX_PI / 2 * direction, 0.0f));
 		MV1SetPosition(model1, pos);
-		//mat1 = MGetRotY(DX_PI / 2 * direction);
+		// mat1 = MGetRotY(DX_PI / 2 * direction);
 		// mat2 = MGetTranslate(pos);
 		// MV1SetMatrix(model1, MMult(mat1, mat2));
 
 		MV1DrawModel(model1);
 
+		// スクリーンバッファの入れ替え
 		ScreenFlip();
 
 		// フレームレート調整
@@ -114,7 +128,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 	}
 
-	// キー入力待ち
 	DxLib_End();				// ＤＸライブラリ使用の終了処理
 
 	return 0;				// ソフトの終了 
