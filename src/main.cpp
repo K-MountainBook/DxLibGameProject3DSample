@@ -7,9 +7,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	int model1, anim_nutral, anim_run, attachidx, rootflm;
 	float anim_totaltime, playtime = 0.0f;
 	int key;
+	// プレイヤーの位置
 	VECTOR pos = VGet(640.0f, 280.0f, -400.0f);
-	VECTOR cpos = VGet(600.0f,600.0f,-400.0f);
-	VECTOR ctgt = VGet(600.0f, 300.0f, -400.0f);
+	// カメラポジション
+	VECTOR cpos = VGet(640.0f, 480.0f, -800.0f);
+	// 注視点
+	VECTOR ctgt = VGet(640.0f, 280.0f, -400.0f);
 	bool running = false;
 
 
@@ -51,7 +54,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	SetDrawScreen(DX_SCREEN_BACK);
 
 	// カメラの設定
-	SetCameraPositionAndTargetAndUpVec(cpos, ctgt, VGet(0.0f, 0.0f, 1.0f));
+	SetCameraPositionAndTargetAndUpVec(cpos, ctgt, VGet(0.0f, 1.0f, 0.0f));
 
 	if (model1 == -1) {
 		return -1;
