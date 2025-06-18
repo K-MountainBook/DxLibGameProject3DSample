@@ -20,6 +20,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	MATRIX mat1, mat2;
 
 	SetGraphMode(WINDOW_WIDTH_HD, WINDOW_HEIGHT_HD, 32, FPS_60);
+	SetUseCharCodeFormat(DX_CHARCODEFORMAT_UTF8);
 	ChangeWindowMode(TRUE);
 
 	if (DxLib_Init() == -1)		// ＤＸライブラリ初期化処理
@@ -28,7 +29,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	}
 
 	// フレームレート調整用カウンタ（ミリ秒
-	int frameRateAdjCounter;
+	int frameRateAdjCounter = 0;
+	int frameRateCounter = 0;
+	int NowTimeMicroSecond = 0;
+	int PrevTimeMicroSecond = 0;
+	float deltaTimeMicroSecond = 0;
 
 
 	model1 = MV1LoadModel(L"Res\\Character\\Player\\PC.mv1");
@@ -48,6 +53,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 	// メインループ
 	while (ProcessMessage() == 0 && CheckHitKey(KEY_INPUT_ESCAPE) == 0) {
+
 		frameRateAdjCounter = GetNowCount();
 
 		playtime += 0.5f;
@@ -57,6 +63,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 		MV1SetAttachAnimTime(model1, attachidx, playtime);
 
+		// パッドの入力状態を返す
 		key = GetJoypadInputState(DX_INPUT_KEY_PAD1);
 		if (key & PAD_INPUT_DOWN) {
 			pos.z -= 4.0f;
@@ -74,6 +81,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			pos.x += 4.0f;
 			direction = RIGHT;
 		}
+		// 何かしらのキー入力があれば変数keyは0にならない
 		if (key == 0) {
 			if (running == true) {
 				running = false;
@@ -92,16 +100,24 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		}
 
 		ClearDrawScreen();
-		// メイン処理を記載
+
+		// 描画処理
 		DrawBox(0, 0, 1280, 720, GetColor(255, 255, 255), TRUE);
 
 		MV1SetRotationXYZ(model1, VGet(0.0f, DX_PI / 2 * direction, 0.0f));
 		MV1SetPosition(model1, pos);
-		//mat1 = MGetRotY(DX_PI / 2 * direction);
+		// mat1 = MGetRotY(DX_PI / 2 * direction);
 		// mat2 = MGetTranslate(pos);
 		// MV1SetMatrix(model1, MMult(mat1, mat2));
 
 		MV1DrawModel(model1);
+
+		deltaTimeMicroSecond = frameRateAdjCounter - PrevTimeMicroSecond;
+		deltaTimeMicroSecond /= 1000.0f;
+
+		DrawFormatString(0, 0, red, L"%.2f", 1.0f / deltaTimeMicroSecond);
+
+		PrevTimeMicroSecond = frameRateAdjCounter;
 
 		ScreenFlip();
 
