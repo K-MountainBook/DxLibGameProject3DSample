@@ -34,6 +34,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 	// フレームレート調整用カウンタ（ミリ秒
 	int frameRateAdjCounter;
+	float fps = 0.0f;
 
 	// モデルの読み込み
 	model1 = MV1LoadModel(L"Res\\Character\\Player\\PC.mv1");
@@ -118,6 +119,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		// MV1SetMatrix(model1, MMult(mat1, mat2));
 
 		MV1DrawModel(model1);
+
+		fps = 1000.0f / (GetNowCount() - frameRateAdjCounter);
+
+		DrawFormatString(0, 0, red, L"FPS:%.2f", fps);
 
 		// スクリーンバッファの入れ替え
 		ScreenFlip();
