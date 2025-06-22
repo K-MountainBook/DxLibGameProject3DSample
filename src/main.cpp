@@ -1,4 +1,5 @@
-﻿#include <DxLib.h>
+﻿#include <iostream>
+#include <DxLib.h>
 #include "Definition.h"
 
 // プログラムは WinMain から始まります
@@ -33,7 +34,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	}
 
 	// フレームレート調整用カウンタ（ミリ秒
-	int frameRateAdjCounter;
+	LONGLONG frameRateAdjCounter = 0;
+	LONGLONG prevFrameTime = 0;
 	float fps = 0.0f;
 
 	// モデルの読み込み
@@ -63,7 +65,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 	// メインループ
 	while (ProcessMessage() == 0 && CheckHitKey(KEY_INPUT_ESCAPE) == 0) {
-		frameRateAdjCounter = GetNowCount();
+
+		frameRateAdjCounter = GetNowHiPerformanceCount();
 
 		// アニメの再生時間を加算する
 		playtime += 0.5f;
@@ -120,19 +123,25 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 		MV1DrawModel(model1);
 
-		fps = 1000.0f / (GetNowCount() - frameRateAdjCounter);
+		// 前フレームからの経過時間を取得する
+		printfDx(L"getnow:%d\n", GetNowHiPerformanceCount());
+		printfDx(L"Prev:%d\n", prevFrameTime);
+		int deltaTime = (GetNowHiPerformanceCount() - prevFrameTime);
 
-		DrawFormatString(0, 0, red, L"FPS:%.2f", fps);
+		DrawFormatString(0, 0, red, L"FPS:%f", ((float)1.0f / (float)deltaTime) * 1000.0f);
 
 		// スクリーンバッファの入れ替え
 		ScreenFlip();
 
 		// フレームレート調整
-		while (1) {
-			if (GetNowCount() - frameRateAdjCounter >= 1000 / FPS_60) {
+		while (true) {
+			if (GetNowHiPerformanceCount() - frameRateAdjCounter >= 1000.0f * 1000.0f / FPS_60) {
 				break;
 			}
 		}
+
+		prevFrameTime = GetNowHiPerformanceCount();
+		printfDx(L"EndFrame:%d\n", prevFrameTime);
 
 	}
 
