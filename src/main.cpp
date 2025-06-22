@@ -115,6 +115,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		deltaTimeMicroSecond = frameRateAdjCounter - PrevTimeMicroSecond;
 		deltaTimeMicroSecond /= 1000.0f;
 
+		printfDx(L"%f\n",deltaTimeMicroSecond);
+
 		DrawFormatString(0, 0, red, L"%.2f", 1.0f / deltaTimeMicroSecond);
 
 		PrevTimeMicroSecond = frameRateAdjCounter;
