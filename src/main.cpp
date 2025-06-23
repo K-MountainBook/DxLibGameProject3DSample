@@ -9,20 +9,16 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	float anim_totaltime, playtime = 0.0f;
 	int key;
 	// プレイヤーの位置
-	VECTOR pos = VGet(640.0f, 280.0f, -400.0f);
+	VECTOR pos = VGet(0.0f, 280.0f, -400.0f);
 	// カメラポジション
-	VECTOR cpos = VGet(640.0f, 480.0f, -800.0f);
+	VECTOR cpos = VGet(0.0f, 480.0f, -800.0f);
 	// 注視点
-	VECTOR ctgt = VGet(640.0f, 280.0f, -400.0f);
+	VECTOR ctgt = VGet(0.0f, 280.0f, -400.0f);
 	bool running = false;
 
+	XINPUT_STATE xinput;
+	int inputX, inputY;
 
-	enum Direction {
-		DOWN,
-		LEFT,
-		UP,
-		RIGHT
-	} direction = DOWN;
 	MATRIX mat1, mat2;
 
 	SetGraphMode(WINDOW_WIDTH_HD, WINDOW_HEIGHT_HD, 32, FPS_60);
@@ -38,20 +34,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	LONGLONG prevFrameTime = 0;
 	float fps = 0.0f;
 
-	// モデルの読み込み
-	model1 = MV1LoadModel(L"Res\\Character\\Player\\PC.mv1");
-	// アニメの読み込み（待機モーション）
-	anim_nutral = MV1LoadModel(L"Res\\Character\\Player\\Anim_Neutral.mv1");
-	// アニメの読み込み（走りモーション）
-	anim_run = MV1LoadModel(L"Res\\Character\\Player\\Anim_Run.mv1");
-	// アニメーションのアタッチ（待機モーション
-	attachidx = MV1AttachAnim(model1, 0, anim_nutral);
-	// アニメーションの総再生時間を取得
-	anim_totaltime = MV1GetAttachAnimTotalTime(model1, attachidx);
-	// モデルの"root"フレームを取得
-	rootflm = MV1SearchFrame(model1, L"root");
-	// 単位行列の初期値を取得し移動しないようにする。
-	MV1SetFrameUserLocalMatrix(model1, rootflm, MGetIdent());
 
 	// 書き込み先をバックバッファに設定
 	SetDrawScreen(DX_SCREEN_BACK);
@@ -77,46 +59,20 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 		MV1SetAttachAnimTime(model1, attachidx, playtime);
 
-		key = GetJoypadInputState(DX_INPUT_KEY_PAD1);
-		if (key & PAD_INPUT_DOWN) {
-			pos.z -= 4.0f;
-			direction = DOWN;
-		}
-		if (key & PAD_INPUT_UP) {
-			pos.z += 4.0f;
-			direction = UP;
-		}
-		if (key & PAD_INPUT_LEFT) {
-			pos.x -= 4.0f;
-			direction = LEFT;
-		}
-		if (key & PAD_INPUT_RIGHT) {
-			pos.x += 4.0f;
-			direction = RIGHT;
-		}
-		if (key == 0) {
-			if (running == true) {
-				running = false;
-				MV1DetachAnim(model1, attachidx);
-				attachidx = MV1AttachAnim(model1, 0, anim_nutral);
-				anim_totaltime = MV1GetAttachAnimTotalTime(model1, attachidx);
-			}
-		}
-		else {
-			if (running == false) {
-				running = true;
-				MV1DetachAnim(model1, attachidx);
-				attachidx = MV1AttachAnim(model1, 0, anim_run);
-				anim_totaltime = MV1GetAttachAnimTotalTime(model1, attachidx);
-			}
-		}
+		key = 0;
+		//key = GetJoypadInputState(DX_INPUT_KEY_PAD1);
+
+		GetJoypadXInputState(DX_INPUT_PAD1, &xinput);
+		GetJoypadAnalogInput(&inputX, &inputY, DX_INPUT_PAD1);
 
 		ClearDrawScreen();
 		// メイン処理を記載
+		// 背景の描画
 		DrawBox(0, 0, 1280, 720, GetColor(255, 255, 255), TRUE);
+		
 
-		MV1SetRotationXYZ(model1, VGet(0.0f, DX_PI / 2 * direction, 0.0f));
-		MV1SetPosition(model1, pos);
+
+
 		// mat1 = MGetRotY(DX_PI / 2 * direction);
 		// mat2 = MGetTranslate(pos);
 		// MV1SetMatrix(model1, MMult(mat1, mat2));

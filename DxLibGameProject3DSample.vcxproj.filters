@@ -1,27 +1,68 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="ソース ファイル">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
-    </Filter>
-    <Filter Include="ヘッダー ファイル">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
-    </Filter>
-    <Filter Include="リソース ファイル">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
-    </Filter>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="src\Definition.h">
-      <Filter>ヘッダー ファイル</Filter>
+    <ClInclude Include="src\Definition.h" />
+    <ClInclude Include="src\Component\Animator.h">
+      <Filter>Component</Filter>
+    </ClInclude>
+    <ClInclude Include="src\GameObject\GameObject.h">
+      <Filter>GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="src\GameObject\Character\Character.h">
+      <Filter>GameObject\Charagter</Filter>
+    </ClInclude>
+    <ClInclude Include="src\GameObject\Character\Player\Player.h">
+      <Filter>GameObject\Charagter\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Manager\SceneManager.h">
+      <Filter>Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Scene\BaseScene.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Scene\GameScene.h">
+      <Filter>Scene</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\main.cpp">
-      <Filter>ソース ファイル</Filter>
+    <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\Component\Animator.cpp">
+      <Filter>Component</Filter>
     </ClCompile>
+    <ClCompile Include="src\GameObject\GameObject.cpp">
+      <Filter>GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GameObject\Character\Character.cpp">
+      <Filter>GameObject\Charagter</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GameObject\Character\Player\Player.cpp">
+      <Filter>GameObject\Charagter\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Manager\SceneManager.cpp">
+      <Filter>Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Scene\GameScene.cpp">
+      <Filter>Scene</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Component">
+      <UniqueIdentifier>{664b8d56-afb1-466b-ab44-91bffc42f748}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameObject">
+      <UniqueIdentifier>{f3b98d9d-4646-4ea8-b04a-de9d846ec527}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Manager">
+      <UniqueIdentifier>{53d8c2c7-ae58-4b28-8414-0b1dd361bfc4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scene">
+      <UniqueIdentifier>{739b23b4-1e6e-43f0-87d0-7b2d56a35ff5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameObject\Charagter">
+      <UniqueIdentifier>{3993e14a-a6b6-4649-bc0e-72082d818314}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameObject\Charagter\Player">
+      <UniqueIdentifier>{ab1edba7-bff6-4146-8958-16676b891224}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
 </Project>
