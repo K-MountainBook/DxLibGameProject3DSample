@@ -43,8 +43,8 @@ void Animator::Play(int _index, float speed)
 
 	pAnimations[_index]->totalTime = MV1GetAttachAnimTotalTime(animationModelHandle, attachiIndex);
 
-	MV1SetRotationXYZ(model1, VGet(0.0f, DX_PI / 2 * direction, 0.0f));
-	MV1SetPosition(model1, );
+	// MV1SetRotationXYZ(model1, VGet(0.0f, DX_PI / 2 * direction, 0.0f));
+	// MV1SetPosition(model1, );
 
 
 	isPlaying = true;

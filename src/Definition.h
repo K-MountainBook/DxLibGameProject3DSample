@@ -124,6 +124,14 @@ enum GameSceneType {
 	SceneMax
 };
 
+// �񋓒萔
+enum class SceneType {
+	Title,
+	Game,
+	Clear,
+	GameOver,
+};
+
 enum Direction {
 	DOWN,
 	LEFT,

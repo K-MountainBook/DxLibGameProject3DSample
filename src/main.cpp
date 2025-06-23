@@ -1,12 +1,11 @@
 ﻿#include <iostream>
 #include <DxLib.h>
 #include "Definition.h"
+#include "Manager/SceneManager.h"
 
 // プログラムは WinMain から始まります
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
-	int model1, anim_nutral, anim_run, attachidx, rootflm;
-	float anim_totaltime, playtime = 0.0f;
 	int key;
 	// プレイヤーの位置
 	VECTOR pos = VGet(0.0f, 280.0f, -400.0f);
@@ -41,24 +40,14 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	// カメラの設定
 	SetCameraPositionAndTargetAndUpVec(cpos, ctgt, VGet(0.0f, 1.0f, 0.0f));
 
-	if (model1 == -1) {
-		return -1;
-	}
-
 	// メインループ
 	while (ProcessMessage() == 0 && CheckHitKey(KEY_INPUT_ESCAPE) == 0) {
 
 		frameRateAdjCounter = GetNowHiPerformanceCount();
 
-		// アニメの再生時間を加算する
-		playtime += 0.5f;
-		// トータル時間を超過した場合リセットする
-		if (playtime > anim_totaltime) {
-			playtime = 0.0f;
-		}
-
-		MV1SetAttachAnimTime(model1, attachidx, playtime);
-
+		// update
+		SceneManager::
+		
 		key = 0;
 		//key = GetJoypadInputState(DX_INPUT_KEY_PAD1);
 
@@ -76,8 +65,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		// mat1 = MGetRotY(DX_PI / 2 * direction);
 		// mat2 = MGetTranslate(pos);
 		// MV1SetMatrix(model1, MMult(mat1, mat2));
-
-		MV1DrawModel(model1);
 
 		// 前フレームからの経過時間を取得する
 		int deltaTime = (frameRateAdjCounter - prevFrameTime);
