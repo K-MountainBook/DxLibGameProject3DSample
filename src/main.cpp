@@ -124,11 +124,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		MV1DrawModel(model1);
 
 		// 前フレームからの経過時間を取得する
-		printfDx(L"getnow:%d\n", GetNowHiPerformanceCount());
-		printfDx(L"Prev:%d\n", prevFrameTime);
-		int deltaTime = (GetNowHiPerformanceCount() - prevFrameTime);
+		int deltaTime = (frameRateAdjCounter - prevFrameTime);
 
-		DrawFormatString(0, 0, red, L"FPS:%f", ((float)1.0f / (float)deltaTime) * 1000.0f);
+		DrawFormatString(0, 0, red, L"FPS:%.2f", ((float)1.0f / (float)deltaTime) * 1000000.0f);
 
 		// スクリーンバッファの入れ替え
 		ScreenFlip();
@@ -140,8 +138,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			}
 		}
 
-		prevFrameTime = GetNowHiPerformanceCount();
-		printfDx(L"EndFrame:%d\n", prevFrameTime);
+		prevFrameTime = frameRateAdjCounter;
 
 	}
 
