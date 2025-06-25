@@ -1,5 +1,6 @@
 #pragma once
 #include "../Definition.h"
+
 class SceneManager
 {
 private:
@@ -27,7 +28,9 @@ public:
 
 	static void DestroyInstance();
 
+	
 private:
+	// ƒƒ“ƒo•Ï”
 	class BaseScene* pCurrentScene;
 	SceneType current;
 	SceneType next;

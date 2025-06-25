@@ -73,4 +73,6 @@ void Player::Render()
 		return;
 	}
 
+	MV1DrawModel(modelHandle);
+
 }

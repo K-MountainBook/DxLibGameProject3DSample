@@ -40,27 +40,21 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	// カメラの設定
 	SetCameraPositionAndTargetAndUpVec(cpos, ctgt, VGet(0.0f, 1.0f, 0.0f));
 
+	// SceneManager::GetInstance()->SetNext(SceneType::Game);
+
 	// メインループ
 	while (ProcessMessage() == 0 && CheckHitKey(KEY_INPUT_ESCAPE) == 0) {
 
 		frameRateAdjCounter = GetNowHiPerformanceCount();
 
 		// update
-		SceneManager::
-		
-		key = 0;
-		//key = GetJoypadInputState(DX_INPUT_KEY_PAD1);
-
-		GetJoypadXInputState(DX_INPUT_PAD1, &xinput);
-		GetJoypadAnalogInput(&inputX, &inputY, DX_INPUT_PAD1);
+		SceneManager::GetInstance()->Update();
 
 		ClearDrawScreen();
 		// メイン処理を記載
 		// 背景の描画
-		DrawBox(0, 0, 1280, 720, GetColor(255, 255, 255), TRUE);
-		
 
-
+		SceneManager::GetInstance()->Render();
 
 		// mat1 = MGetRotY(DX_PI / 2 * direction);
 		// mat2 = MGetTranslate(pos);

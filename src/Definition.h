@@ -43,6 +43,14 @@
 #define Rad2Deg(x) ( x / DX_PI_F * 180.0f )
 #define WaveMoveX(x)  ( cosf(x * 0.1) * 10)
 
+// ワールドベクトル
+#define VUp			(VGet(0.0f,1.0f,0.0f))
+#define VDown		(VGet(0.0f,-1.0f,0.0f))
+#define VRight		(VGet(1.0f,0.0f,0.0f))
+#define VLeft		(VGet(-1.0f,0.0f,0.0f))
+#define VForward	(VGet(0.0f,0.0f,1.0f))
+#define VBack		(VGet(0.0f,0.0f,-1.0f))
+
 // ゼロベクトル
 #define VZero		(VGet(0.0f,0.0f,0.0f))		// ゼロベクトル
 #define VOne		(VGet(1.0f,1.0f,1.0f))		// 単位ベクトル

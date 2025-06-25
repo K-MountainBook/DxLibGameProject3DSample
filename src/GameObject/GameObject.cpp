@@ -1,7 +1,7 @@
 #include "GameObject.h"
 
 GameObject::GameObject(VECTOR _pos, std::string _tag)
-	:isVisble(false)
+	:isVisble(true)
 	, position(VZero)
 	, rotaiton(VZero)
 	, scale(VZero)

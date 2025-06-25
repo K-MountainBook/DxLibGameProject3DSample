@@ -1,4 +1,5 @@
 #include "GameScene.h"
+#include "../GameObject/Camera/Camera.h"
 
 #include <DxLib.h>
 #include <vector>
@@ -26,6 +27,7 @@ void GameScene::Start()
 	// モデルの読み込み
 	playerModel = MV1LoadModel(L"Res\\Character\\Player\\PC.mv1");
 
+	// プレイヤーのインスタンス化
 	Player* pPlayer = new Player();
 	{
 		this->pPlayer = pPlayer;
@@ -37,6 +39,12 @@ void GameScene::Start()
 		pPlayer->GetAnimator()->Play(0);
 
 		pGameObjectArray.push_back(pPlayer);
+	}
+
+	// TODO:カメラのインスタンス化を行う
+	Camera* pCamera = new Camera(VGet(0.0f, 200.0f, -800.0f));
+	{
+		pCamera->SetTarget(pPlayer);
 	}
 }
 
@@ -53,6 +61,8 @@ void GameScene::Update()
 void GameScene::Render()
 {
 
+
+
 	// XYZラインの描画
 	// y緑、x赤、zが青
 	for (int i = -5000; i <= 5000; i += 100) {
@@ -67,4 +77,11 @@ void GameScene::Render()
 		// DrawLine3D(VGet(0, 10000, i), VGet(0, -10000, i), gray);	// Y
 
 	}
+
+	// MV1DrawModel(playerModel);
+
+	for (auto pGameObject : pGameObjectArray) {
+		pGameObject->Render();
+	}
+
 }
