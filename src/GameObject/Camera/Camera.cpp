@@ -47,7 +47,7 @@ void Camera::Update()
 		inputVec = VAdd(inputVec, VDown);
 	}
 
-	// この書き方だと1フレーム毎に1度Degree角が変化する。
+	// この書き方だと1フレーム毎に1度(VUp等の値)Degree角が変化する。
 	// Y方向に成す角φ
 	// →対象を中心にカメラが移動するため、横入力だと上下の回転はせずY座標を中心に回転する
 	rotaiton.y += -inputVec.x;
