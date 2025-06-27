@@ -45,6 +45,7 @@ void GameScene::Start()
 	Camera* pCamera = new Camera(VGet(0.0f, 200.0f, -800.0f));
 	{
 		pCamera->SetTarget(pPlayer);
+		pGameObjectArray.push_back(pCamera);
 	}
 }
 

@@ -30,10 +30,10 @@ void InputManager::DestroyInstance() {
 }
 
 void InputManager::Update() {
-	// キーボードの入力を更新
 	memcpy_s(prevKeyState, 256, keyState, 256);
+	prevxinput = xinput;
+	// キーボードの入力を更新
 	GetHitKeyStateAll(keyState);
 	// Xinputコントローラの入力を更新
-	prevxinput = xinput;
 	GetJoypadXInputState(DX_INPUT_PAD1, &xinput);
 }

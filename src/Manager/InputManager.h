@@ -64,8 +64,21 @@ public:
 	}
 
 	void GetLeftStick(short* xAxis, short* yAxis) {
-		xAxis = &xinput.ThumbLX;
-		yAxis = &xinput.ThumbLY;
+		*xAxis = xinput.ThumbLX;
+		*yAxis = xinput.ThumbLY;
 	}
+	void GetRightStick(short* xAxis, short* yAxis) {
+		*xAxis = xinput.ThumbRX;
+		*yAxis = xinput.ThumbRY;
+	}
+
+	void GetLeftTrigger(unsigned char* pPressure) {
+		*pPressure = xinput.LeftTrigger;
+	}
+
+	void GetRightTrigger(unsigned char* pPressure) {
+		*pPressure = xinput.RightTrigger;
+	}
+
 };
 

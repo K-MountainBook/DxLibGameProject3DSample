@@ -60,6 +60,7 @@ void SceneManager::Update() {
 	
 	pCurrentScene->Update();
 
+	// ê–Ê‚Ì‘JˆÚ‚ª–³‚¯‚ê‚ÎXV‚µ‚È‚¢
 	if (current != next) {
 		LoadScene();
 	}
@@ -99,4 +100,6 @@ void SceneManager::LoadScene()
 		pCurrentScene = nullptr;
 		break;
 	}
+
+	current = next;
 }

@@ -15,8 +15,13 @@ private:
 
 	bool isShaking;			// —h‚ê’†H
 
-	short* LStickX;
-	short* LStickY;
+	short LStickX;
+	short LStickY;
+	short RStickX;
+	short RStickY;
+
+	unsigned char LTrigger;
+	unsigned char RTrigger;
 
 public:
 	static Camera* main;	// ƒƒCƒ“ƒJƒƒ‰
