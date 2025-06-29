@@ -63,20 +63,20 @@ public:
 		return prevxinput.Buttons[_key] && !xinput.Buttons[_key];
 	}
 
-	void GetLeftStick(short* xAxis, short* yAxis) {
+	void GetLeftStick(short* xAxis, short* yAxis) const {
 		*xAxis = xinput.ThumbLX;
 		*yAxis = xinput.ThumbLY;
 	}
-	void GetRightStick(short* xAxis, short* yAxis) {
+	void GetRightStick(short* xAxis, short* yAxis) const {
 		*xAxis = xinput.ThumbRX;
 		*yAxis = xinput.ThumbRY;
 	}
 
-	void GetLeftTrigger(unsigned char* pPressure) {
+	void GetLeftTrigger(unsigned char* pPressure)  const {
 		*pPressure = xinput.LeftTrigger;
 	}
 
-	void GetRightTrigger(unsigned char* pPressure) {
+	void GetRightTrigger(unsigned char* pPressure)  const {
 		*pPressure = xinput.RightTrigger;
 	}
 
