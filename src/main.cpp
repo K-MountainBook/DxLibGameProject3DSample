@@ -49,6 +49,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 
 		// update
 		SceneManager::GetInstance()->Update();
+		
 
 		ClearDrawScreen();
 		// メイン処理を記載

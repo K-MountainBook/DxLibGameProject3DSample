@@ -11,7 +11,6 @@ public:
 	~Player();
 
 protected:
-	XINPUT_STATE xinput;
 	int inputX, inputY;
 	int key;
 	bool running = false;

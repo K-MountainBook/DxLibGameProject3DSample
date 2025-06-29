@@ -43,7 +43,7 @@ void Camera::Update()
 	input->GetRightStick(&RStickX, &RStickY);
 	input->GetLeftTrigger(&LTrigger);
 	input->GetRightTrigger(&RTrigger);
-	//
+
 	//if (LStickX > 0) {
 	//	inputVec = VAdd(inputVec, VRight);
 	//}
