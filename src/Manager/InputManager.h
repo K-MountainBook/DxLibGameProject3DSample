@@ -1,4 +1,7 @@
 #pragma once
+#ifndef UNIQUE_INPUTMANAGER
+#define UNIQUE_INPUTMANAGER
+
 #include <DxLib.h>
 /// <summary>
 /// 入力管理（シングルトン）
@@ -82,3 +85,4 @@ public:
 
 };
 
+#endif // UNIQUE_INPUTMANAGER

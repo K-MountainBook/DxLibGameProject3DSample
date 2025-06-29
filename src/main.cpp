@@ -4,9 +4,9 @@
 #include "Manager/SceneManager.h"
 
 // プログラムは WinMain から始まります
-int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
+int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPSTR lpCmdLine, _In_ int nCmdShow)
 {
-	int key;
+	// int key;
 	// プレイヤーの位置
 	VECTOR pos = VGet(0.0f, 280.0f, -400.0f);
 	// カメラポジション
@@ -15,10 +15,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	VECTOR ctgt = VGet(0.0f, 280.0f, -400.0f);
 	bool running = false;
 
-	XINPUT_STATE xinput;
-	int inputX, inputY;
+	// XINPUT_STATE xinput;
+	//int inputX, inputY;
 
-	MATRIX mat1, mat2;
+	//MATRIX mat1, mat2;
 
 	SetGraphMode(WINDOW_WIDTH_HD, WINDOW_HEIGHT_HD, 32, FPS_60);
 	ChangeWindowMode(TRUE);
@@ -61,7 +61,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		// MV1SetMatrix(model1, MMult(mat1, mat2));
 
 		// 前フレームからの経過時間を取得する
-		int deltaTime = (frameRateAdjCounter - prevFrameTime);
+		LONGLONG deltaTime = (frameRateAdjCounter - prevFrameTime);
 
 		DrawFormatString(0, 0, red, L"FPS:%.2f", ((float)1.0f / (float)deltaTime) * 1000000.0f);
 

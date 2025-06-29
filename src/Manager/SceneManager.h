@@ -1,4 +1,8 @@
 #pragma once
+#ifndef UNIQUE_SCENEMANAGER
+#define UNIQUE_SCENEMANAGER
+
+
 #include "../Definition.h"
 
 class SceneManager
@@ -44,3 +48,5 @@ public:
 	void SetNext(SceneType _next);
 };
 
+
+#endif // !UNIQUE SCENEMANAGER
