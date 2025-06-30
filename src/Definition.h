@@ -1,4 +1,6 @@
 #pragma once
+#ifndef UNIQUE_DEFINITION
+#define UNIQUE_DEFINITION
 
 #include <DxLib.h>
 #include <string>
@@ -148,3 +150,6 @@ enum Direction {
 
 	DirectionMax
 };
+
+
+#endif // !UNIQUE_DEFINITION

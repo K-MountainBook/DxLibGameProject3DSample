@@ -3,7 +3,7 @@
 GameObject::GameObject(VECTOR _pos, std::string _tag)
 	:isVisble(true)
 	, position(VZero)
-	, rotaiton(VZero)
+	, rotation(VZero)
 	, scale(VZero)
 	, matrix(MGetIdent())
 	, tag("")
@@ -16,3 +16,11 @@ GameObject::GameObject(VECTOR _pos, std::string _tag)
 GameObject::~GameObject()
 {
 }
+
+void GameObject::Update() {
+	if (!isVisble) {
+		return;
+	}
+
+}
+

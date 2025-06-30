@@ -6,7 +6,7 @@ class GameObject
 protected:
 	bool isVisble;				// 表示フラグ
 	VECTOR position;			// 位置
-	VECTOR rotaiton;			// 回転（オイラー
+	VECTOR rotation;			// 回転（オイラー
 	VECTOR scale;				// 拡縮
 
 	MATRIX matrix;				// 座標、回転、拡縮行列

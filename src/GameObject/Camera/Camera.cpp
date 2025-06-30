@@ -28,6 +28,7 @@ Camera::~Camera()
 
 void Camera::Start()
 {
+	
 }
 
 void Camera::Update()
@@ -39,8 +40,9 @@ void Camera::Update()
 	VECTOR inputVec = VZero;
 
 	input->Update();
-	input->GetLeftStick(&LStickX, &LStickY);
-	input->GetRightStick(&RStickX, &RStickY);
+	//input->GetLeftStick(&LStickX, &LStickY);
+	//input->GetRightStick(&RStickX, &RStickY);
+	input->GetLRStick(&LStickX, &LStickY, &RStickX, &RStickY);
 	input->GetLeftTrigger(&LTrigger);
 	input->GetRightTrigger(&RTrigger);
 

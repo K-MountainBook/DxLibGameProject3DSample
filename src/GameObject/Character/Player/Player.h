@@ -14,10 +14,7 @@ protected:
 	int inputX, inputY;
 	int key;
 	bool running = false;
-
-	int model;
-
-
+	Direction direction = DOWN;
 
 public:
 	void Start() override;

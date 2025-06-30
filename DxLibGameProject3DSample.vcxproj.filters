@@ -23,9 +23,11 @@
     <ClInclude Include="src\Scene\GameScene.h">
       <Filter>Scene</Filter>
     </ClInclude>
-    <ClInclude Include="src\Manager\InputManager.h" />
     <ClInclude Include="src\GameObject\Camera\Camera.h">
       <Filter>GameObject\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Manager\InputManager.h">
+      <Filter>Manager</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -48,9 +50,11 @@
     <ClCompile Include="src\Scene\GameScene.cpp">
       <Filter>Scene</Filter>
     </ClCompile>
-    <ClCompile Include="src\Manager\InputManager.cpp" />
     <ClCompile Include="src\GameObject\Camera\Camera.cpp">
       <Filter>GameObject\Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Manager\InputManager.cpp">
+      <Filter>Manager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -66,6 +66,14 @@ public:
 		return prevxinput.Buttons[_key] && !xinput.Buttons[_key];
 	}
 
+	void GetLRStick(short* xLAxis, short* yLAxis, short* xRAxis, short* yRAxis) {
+		*xLAxis = xinput.ThumbLX;
+		*yLAxis = xinput.ThumbLY;
+		*xRAxis = xinput.ThumbRX;
+		*yRAxis = xinput.ThumbRY;
+
+	}
+
 	void GetLeftStick(short* xAxis, short* yAxis) const {
 		*xAxis = xinput.ThumbLX;
 		*yAxis = xinput.ThumbLY;

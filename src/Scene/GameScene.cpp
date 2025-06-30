@@ -7,6 +7,9 @@
 #include "../Definition.h"
 #include "../GameObject/Character/Player/Player.h"
 
+/// <summary>
+/// コンストラクタの実装
+/// </summary>
 GameScene::GameScene()
 	:playerModel(INVALID)
 	, stageModel(INVALID)
@@ -17,6 +20,9 @@ GameScene::GameScene()
 	Update();
 }
 
+/// <summary>
+/// デストラクタの実装
+/// </summary>
 GameScene::~GameScene()
 {
 	DeleteShadowMap(shadowMapHandle);
@@ -49,6 +55,7 @@ void GameScene::Start()
 	}
 }
 
+// pGameObjectArrayにぶち込んだオブジェクトを全て更新する
 void GameScene::Update()
 {
 	for (auto pGameObject : pGameObjectArray) {
@@ -61,9 +68,6 @@ void GameScene::Update()
 
 void GameScene::Render()
 {
-
-
-
 	// XYZラインの描画
 	// y緑、x赤、zが青
 	for (int i = -5000; i <= 5000; i += 100) {
@@ -79,8 +83,7 @@ void GameScene::Render()
 
 	}
 
-	// MV1DrawModel(playerModel);
-
+	// pGameObjectArrayにぶち込んだオブジェクトを全てレンダリングする
 	for (auto pGameObject : pGameObjectArray) {
 		pGameObject->Render();
 	}

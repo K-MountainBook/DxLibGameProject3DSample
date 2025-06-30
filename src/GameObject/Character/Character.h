@@ -17,10 +17,10 @@ public:
 public:
 
 	// モデルハンドルの設定
-	void SetModelHandle(int handle) { modelHandle = handle; }
+	void SetModelHandle(int& handle) { modelHandle = handle; }
 
 	// モデルハンドルのｓ取得
-	int GetModelHandle() { return modelHandle; }
+	inline int GetModelHandle() { return modelHandle; }
 
 	inline Animator* GetAnimator() const { return pAnimator; }
 
