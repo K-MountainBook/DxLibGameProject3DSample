@@ -1,7 +1,7 @@
 #include "GameObject.h"
 
 GameObject::GameObject(VECTOR _pos, std::string _tag)
-	:isVisble(true)
+	:isVisible(true)
 	, position(VZero)
 	, rotation(VZero)
 	, scale(VZero)
@@ -18,7 +18,7 @@ GameObject::~GameObject()
 }
 
 void GameObject::Update() {
-	if (!isVisble) {
+	if (!isVisible) {
 		return;
 	}
 

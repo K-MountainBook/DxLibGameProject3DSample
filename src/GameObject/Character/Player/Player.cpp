@@ -17,7 +17,7 @@ Player::~Player()
 
 void Player::Start()
 {
-	if (!isVisble) {
+	if (!isVisible) {
 		return;
 	}
 
@@ -26,7 +26,7 @@ void Player::Start()
 
 void Player::Update()
 {
-	if (!isVisble) {
+	if (!isVisible) {
 		return;
 	}
 
@@ -90,7 +90,7 @@ void Player::Update()
 
 void Player::Render()
 {
-	if (!isVisble) {
+	if (!isVisible) {
 		return;
 	}
 

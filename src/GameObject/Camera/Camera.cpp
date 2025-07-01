@@ -68,7 +68,7 @@ void Camera::Update()
 	rotation.x += inputVec.y;
 
 	// カメラの角度に合わせて、対象を中心とした球状にカメラを移動させる
-	position = GetTarget()->position;
+	position = pTarget->GetPosition();
 	position.y += 200.0f;
 
 }
@@ -76,7 +76,7 @@ void Camera::Update()
 void Camera::Render()
 {
 
-	SetCameraPositionAndTarget_UpVecY(position, );
+	// SetCameraPositionAndTarget_UpVecY(position, pTarget->GetPosition());
 
 
 	DrawFormatString(0, 20, red, L"LeftStickAxisX:%d", LStickX);
