@@ -70,7 +70,7 @@ void GameScene::Render()
 {
 	// XYZƒ‰ƒCƒ“‚Ì•`‰æ
 	// y—ÎAxÔAz‚ªÂ
-	for (int i = -5000; i <= 5000; i += 100) {
+	for (float i = -5000; i <= 5000; i += 100) {
 		if (i == 0) {
 			DrawLine3D(VGet(i, 0, 5000), VGet(i, 0, -5000), blue);	// Z
 			DrawLine3D(VGet(5000, 0, i), VGet(-5000, 0, i), red);	// X

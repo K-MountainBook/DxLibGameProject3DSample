@@ -84,7 +84,7 @@ void Player::Update()
 	position = VAdd(position, VScale(NormVec, 10.0f));
 
 	// 指定されたハンドルのモデルのポジションを更新する
-	MV1SetRotationXYZ(modelHandle, VGet(0.0f, DX_PI / 2 * direction, 0.0f));
+	MV1SetRotationXYZ(modelHandle, VGet(0.0f, DX_PI_F / 2 * direction, 0.0f));
 	MV1SetPosition(modelHandle, position);
 }
 
