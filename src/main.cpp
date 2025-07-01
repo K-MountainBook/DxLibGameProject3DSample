@@ -10,9 +10,9 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 	// プレイヤーの位置
 	VECTOR pos = VGet(0.0f, 280.0f, -400.0f);
 	// カメラポジション
-	VECTOR cpos = VGet(0.0f, 480.0f, -800.0f);
+	VECTOR cpos = VGet(0.0f, 180.0f, -400.0f);
 	// 注視点
-	VECTOR ctgt = VGet(0.0f, 280.0f, -400.0f);
+	VECTOR ctgt = VGet(0.0f, 0.0f, 400.0f);
 	bool running = false;
 
 	// XINPUT_STATE xinput;
