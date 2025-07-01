@@ -20,6 +20,30 @@ Animator::~Animator()
 
 void Animator::Update()
 {
+	if (currentAnimationHandle == INVALID) {
+		return;
+	}
+
+	AnimationClip* pCurrentAnim = GetAnimation(currentAnimationHandle);
+
+	if (pCurrentAnim == nullptr) {
+		return;
+	}
+
+	pCurrentAnim->playTime += pCurrentAnim->playSpeed;
+
+	if (pCurrentAnim->playTime > pCurrentAnim->totalTime) {
+		isPlaying = false;
+		pCurrentAnim->playTime = 0.0f;
+		if (pCurrentAnim->isLoop) {
+			isPlaying = true;
+		}
+		else {
+			Play(pCurrentAnim->transtion);
+		}
+	}
+
+	MV1SetAttachAnimTime(animationModelHandle, 0, pCurrentAnim->playTime);
 }
 
 void Animator::Load(std::wstring _filePath, bool _isLoop, int _transition)
