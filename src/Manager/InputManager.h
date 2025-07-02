@@ -3,6 +3,7 @@
 #define UNIQUE_INPUTMANAGER
 
 #include <DxLib.h>
+#include "../Definition.h"
 /// <summary>
 /// 入力管理（シングルトン）
 /// </summary>
@@ -40,6 +41,8 @@ private:
 
 public:
 	void Update();
+
+	void DebugRender();
 
 public:
 	inline bool IsKeyDown(int _key) const {

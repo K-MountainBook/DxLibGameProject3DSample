@@ -39,7 +39,6 @@ void Camera::Update()
 
 	VECTOR inputVec = VZero;
 
-	input->Update();
 	//input->GetLeftStick(&LStickX, &LStickY);
 	//input->GetRightStick(&RStickX, &RStickY);
 	input->GetLRStick(&LStickX, &LStickY, &RStickX, &RStickY);
@@ -76,15 +75,8 @@ void Camera::Update()
 void Camera::Render()
 {
 
-	// SetCameraPositionAndTarget_UpVecY(position, pTarget->GetPosition());
+	SetCameraPositionAndTarget_UpVecY(position, pTarget->GetPosition());
 
-
-	DrawFormatString(0, 20, red, L"LeftStickAxisX:%d", LStickX);
-	DrawFormatString(0, 40, red, L"LeftStickAxisY:%d", LStickY);
-	DrawFormatString(0, 60, red, L"RightStickAxisX:%d", RStickX);
-	DrawFormatString(0, 80, red, L"RihgtStickAxisY:%d", RStickY);
-	DrawFormatString(0, 100, red, L"LeftTrigger:%d", LTrigger);
-	DrawFormatString(0, 120, red, L"RightTrigger:%d", RTrigger);
 }
 
 void Camera::Shake(int _direction, float _time, float _power)

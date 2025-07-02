@@ -37,3 +37,13 @@ void InputManager::Update() {
 	// Xinputコントローラの入力を更新
 	GetJoypadXInputState(DX_INPUT_PAD1, &xinput);
 }
+
+void InputManager::DebugRender() {
+
+	DrawFormatString(0, 20, red, L"LeftStickAxisX:%d", xinput.ThumbLX);
+	DrawFormatString(0, 40, red, L"LeftStickAxisY:%d", xinput.ThumbLY);
+	DrawFormatString(0, 60, red, L"RightStickAxisX:%d", xinput.ThumbRX);
+	DrawFormatString(0, 80, red, L"RihgtStickAxisY:%d", xinput.ThumbRY);
+	DrawFormatString(0, 100, red, L"LeftTrigger:%d", xinput.LeftTrigger);
+	DrawFormatString(0, 120, red, L"RightTrigger:%d", xinput.RightTrigger);
+}

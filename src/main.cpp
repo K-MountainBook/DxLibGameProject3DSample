@@ -2,6 +2,7 @@
 #include <DxLib.h>
 #include "Definition.h"
 #include "Manager/SceneManager.h"
+#include "Manager/InputManager.h"
 
 // プログラムは WinMain から始まります
 int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPSTR lpCmdLine, _In_ int nCmdShow)
@@ -45,9 +46,11 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 	// メインループ
 	while (ProcessMessage() == 0 && CheckHitKey(KEY_INPUT_ESCAPE) == 0) {
 
+		// メインループの開始時間を取得する
 		frameRateAdjCounter = GetNowHiPerformanceCount();
 
 		// update
+		InputManager::GetInstance()->Update();
 		SceneManager::GetInstance()->Update();
 		
 
@@ -56,6 +59,10 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 		// 背景の描画
 
 		SceneManager::GetInstance()->Render();
+
+#if _DEBUG
+		InputManager::GetInstance()->DebugRender();
+#endif
 
 		// mat1 = MGetRotY(DX_PI / 2 * direction);
 		// mat2 = MGetTranslate(pos);
@@ -76,8 +83,8 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 			}
 		}
 
+		// メインループの開始時間を退避
 		prevFrameTime = frameRateAdjCounter;
-
 	}
 
 	DxLib_End();				// ＤＸライブラリ使用の終了処理

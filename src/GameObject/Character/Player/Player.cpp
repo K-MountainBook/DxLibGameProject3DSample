@@ -35,27 +35,31 @@ void Player::Update()
 	short xAxis;
 	short yAxis;
 
-	xinput->Update();
+	// 現フレームのキー入力状況を取得する
 	xinput->GetLeftStick(&xAxis, &yAxis);
 
 	// 矢印キーでも、左スティックでも動くように調整
 	{
-		if (xinput->IsButton(XINPUT_BUTTON_DPAD_DOWN) || yAxis < SHRT_MIN  / 2) {
+		// 手前
+		if (xinput->IsButton(XINPUT_BUTTON_DPAD_DOWN) || yAxis < SHRT_MIN  / 2 || xinput->IsKey(KEY_INPUT_S)) {
 			key = 1;
 			inputVec.z -= 4.0f;
 			direction = DOWN;
 		}
-		if (xinput->IsButton(XINPUT_BUTTON_DPAD_UP) || yAxis > SHRT_MAX / 2) {
+		// 奥
+		if (xinput->IsButton(XINPUT_BUTTON_DPAD_UP) || yAxis > SHRT_MAX / 2 || xinput->IsKey(KEY_INPUT_W)) {
 			key = 1;
 			inputVec.z += 4.0f;
 			direction = UP;
 		}
-		if (xinput->IsButton(XINPUT_BUTTON_DPAD_LEFT) || xAxis < SHRT_MIN / 2) {
+		// 左
+		if (xinput->IsButton(XINPUT_BUTTON_DPAD_LEFT) || xAxis < SHRT_MIN / 2 || xinput->IsKey(KEY_INPUT_A)) {
 			key = 1;
 			inputVec.x -= 4.0f;
 			direction = LEFT;
 		}
-		if (xinput->IsButton(XINPUT_BUTTON_DPAD_RIGHT) || xAxis > SHRT_MAX / 2) {
+		// 右
+		if (xinput->IsButton(XINPUT_BUTTON_DPAD_RIGHT) || xAxis > SHRT_MAX / 2 || xinput->IsKey(KEY_INPUT_D)) {
 			key = 1;
 			inputVec.x += 4.0f;
 			direction = RIGHT;
@@ -83,8 +87,9 @@ void Player::Update()
 	}
 	position = VAdd(position, VScale(NormVec, 10.0f));
 
-	// 指定されたハンドルのモデルのポジションを更新する
+	// 移動方向に向ける（VGetの引数二つ目のYにラジアンの90度*方向を掛ける。）
 	MV1SetRotationXYZ(modelHandle, VGet(0.0f, DX_PI_F / 2 * direction, 0.0f));
+	// 指定されたハンドルのモデルのポジションを更新する
 	MV1SetPosition(modelHandle, position);
 }
 
