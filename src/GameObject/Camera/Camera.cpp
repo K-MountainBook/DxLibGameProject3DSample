@@ -68,8 +68,9 @@ void Camera::Update()
 
 	// カメラの角度に合わせて、対象を中心とした球状にカメラを移動させる
 	position = pTarget->GetPosition();
+	position.x += 0.0f;
 	position.y += 200.0f;
-
+	position.z += -400.0f;
 }
 
 void Camera::Render()
