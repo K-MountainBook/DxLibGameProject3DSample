@@ -8,7 +8,7 @@ Camera::Camera(VECTOR _pos, float _length)
 	:GameObject(_pos)
 	, pTarget(nullptr)
 	, armLength(_length)
-	, offset(VScale(VUp, 0))
+	, offset(VScale(VUp, 100))
 	, shakeOffset(VZero)
 	, timer(0)
 	, shakeTime(0)
@@ -70,35 +70,20 @@ void Camera::Update()
 	// とりあえずキーの方向にカメラが動くようにするためプラス方向へ回す
 	rotation.x += inputVec.y;
 
+	// オーバーフロー防止
+	if (rotation.x <= -360 || rotation.x >= 360) {
+		rotation.x = 0;
+	}
+	if (rotation.y <= -360 || rotation.y >= 360) {
+		rotation.y = 0;
+	}
+
 	// カメラの角度に合わせて、対象を中心とした球状にカメラを移動させる
 	// 半径を1、中心を(0,0,0)とした位置を算出する
 	VECTOR sphere = VGet(
-		// 45度
-		// -cosf(0.7853) * sinf(0.7853)
-		// -0.7071 * 0.7071 = -0.49999
-		// cosf(0.7853)
-		// 0.7071
-		// -cosf(0.7853) * cosf(0.7853)
-		// -0.7071 * 0.7071 = -0.4999
-		//
-		// 135度
-		// -cosf(2.356) * sinf(2.356)
-		// 0.707 * 0.707 = 0.4999
-		// cosf(2.356)
-		// -0.707
-		// -cosf(2.356) * cosf(2.356)
-		// 0.707 * -0.707 = -0.4999
-		//
-		// 225度
-		// -cosf(3.926) * sinf(3.926)
-		// 0.707 * -0.707 = -0.4999
-		// cosf(3.926)
-		// -0.707
-		// -cosf(3.926) * cosf(3.926)
-		// 0.707 * -0.707 = -0.4999
-		-cosf(Deg2Rad(rotation.x)) * sinf(Deg2Rad(rotation.y)),
-		cosf(Deg2Rad(rotation.x)),
-		-cosf(Deg2Rad(rotation.x)) * cosf(Deg2Rad(rotation.y))
+		-cosf(Deg2Rad(rotation.x)) * sinf(Deg2Rad(rotation.y)),		
+		sinf(Deg2Rad(rotation.x)),									// 2025/07/07 ここがcosfになってただけでした
+		-cosf(Deg2Rad(rotation.x)) * cosf(Deg2Rad(rotation.y))		
 	);
 
 	// 半径を定数倍して距離を合わせる
@@ -114,9 +99,6 @@ void Camera::Update()
 	SetCameraPositionAndAngle(
 		VAdd(position, offset), Deg2Rad(rotation.x), Deg2Rad(rotation.y), Deg2Rad(rotation.z)
 	);
-
-
-
 }
 
 void Camera::Render()
