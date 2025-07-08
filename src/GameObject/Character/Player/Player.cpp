@@ -38,6 +38,8 @@ void Player::Update()
 	// 現フレームのキー入力状況を取得する
 	xinput->GetLeftStick(&xAxis, &yAxis);
 
+	// TODO 移動方向がカメラの方向に影響されるように修正する必要がある
+	// 
 	// 矢印キーでも、左スティックでも動くように調整
 	{
 		// 手前
