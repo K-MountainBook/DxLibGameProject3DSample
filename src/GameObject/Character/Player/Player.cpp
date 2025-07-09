@@ -1,6 +1,7 @@
 #include <climits>
 #include "Player.h"
 #include "../../../Manager/InputManager.h"
+#include "../../Camera/Camera.h"
 
 Player::Player(VECTOR _pos) :
 	Character(_pos, "player")
@@ -45,27 +46,29 @@ void Player::Update()
 		// 手前
 		if (xinput->IsButton(XINPUT_BUTTON_DPAD_DOWN) || yAxis < SHRT_MIN  / 2 || xinput->IsKey(KEY_INPUT_S)) {
 			key = 1;
-			inputVec.z -= 4.0f;
+			inputVec = VAdd(inputVec, VBack);
 			direction = DOWN;
 		}
 		// 奥
 		if (xinput->IsButton(XINPUT_BUTTON_DPAD_UP) || yAxis > SHRT_MAX / 2 || xinput->IsKey(KEY_INPUT_W)) {
 			key = 1;
-			inputVec.z += 4.0f;
+			inputVec = VAdd(inputVec, VForward);
 			direction = UP;
 		}
 		// 左
 		if (xinput->IsButton(XINPUT_BUTTON_DPAD_LEFT) || xAxis < SHRT_MIN / 2 || xinput->IsKey(KEY_INPUT_A)) {
 			key = 1;
-			inputVec.x -= 4.0f;
+			inputVec = VAdd(inputVec, VLeft);
 			direction = LEFT;
 		}
 		// 右
 		if (xinput->IsButton(XINPUT_BUTTON_DPAD_RIGHT) || xAxis > SHRT_MAX / 2 || xinput->IsKey(KEY_INPUT_D)) {
 			key = 1;
-			inputVec.x += 4.0f;
+			inputVec = VAdd(inputVec, VRight);
 			direction = RIGHT;
 		}
+
+		// TODO アニメーションの設定
 		if (key == 0) {
 			if (running == true) {
 				running = false;
@@ -86,6 +89,15 @@ void Player::Update()
 	if (key == 1) {
 		NormVec = VNorm(inputVec);
 		key = 0;
+
+		// カメラから見た方向に移動する方向ベクトルの変数を作成
+		VECTOR moveDirection = VZero;
+
+		// カメラのy軸回転を取得
+		float thetaY = Deg2Rad(Camera::main->GetRotation().y);
+		// カメラのY軸回転を元に行列を作成
+		MATRIX mRot = MGetRotY(thetaY);
+
 	}
 	position = VAdd(position, VScale(NormVec, 10.0f));
 
