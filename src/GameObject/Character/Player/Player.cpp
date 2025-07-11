@@ -86,23 +86,32 @@ void Player::Update()
 	// 正規化したベクトルを作成して、移動力を掛けた値を現在の位置に足す。
 	// ゼロベクトルを渡すと正規化できないと判断しALL-1.0fを返すのでキー入力があった場合のみ実行
 	VECTOR NormVec = VZero;
+	VECTOR moveDirection = VZero;
 	if (key == 1) {
 		NormVec = VNorm(inputVec);
 		key = 0;
 
 		// カメラから見た方向に移動する方向ベクトルの変数を作成
-		VECTOR moveDirection = VZero;
 
 		// カメラのy軸回転を取得
 		float thetaY = Deg2Rad(Camera::main->GetRotation().y);
 		// カメラのY軸回転を元に行列を作成
 		MATRIX mRot = MGetRotY(thetaY);
 
-	}
-	position = VAdd(position, VScale(NormVec, 10.0f));
+		// 行列をベクトルに変換
+		moveDirection = VTransform(inputVec, mRot);
 
-	// 移動方向に向ける（VGetの引数二つ目のYにラジアンの90度*方向を掛ける。）
-	MV1SetRotationXYZ(modelHandle, VGet(0.0f, DX_PI_F / 2 * direction, 0.0f));
+		rotation.y = Rad2Deg(atan2f(moveDirection.x, moveDirection.z));
+		position = VAdd(position, VScale(moveDirection, 10.0f));
+
+
+		// 移動方向に向ける（VGetの引数二つ目のY(0～4の整数を取る)にラジアンの90度*方向を掛ける。）
+		// TODO 現在だとキー入力に対した直角しか回転できないので移動方向へ向けるようにする
+		MV1SetRotationXYZ(modelHandle, VGet(0.0f, DX_PI_F / 2 * direction, 0.0f));
+
+	}
+
+	printfDx(L"%f\n", rotation.y);
 	// 指定されたハンドルのモデルのポジションを更新する
 	MV1SetPosition(modelHandle, position);
 }

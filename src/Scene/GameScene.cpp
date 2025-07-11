@@ -68,6 +68,9 @@ void GameScene::Update()
 
 void GameScene::Render()
 {
+	// 背景色
+	DrawBox(0, 0, 1280, 720, white, true);
+
 	// XYZラインの描画
 	// y緑、x赤、zが青
 	for (float i = -5000; i <= 5000; i += 100) {
