@@ -47,25 +47,25 @@ void Player::Update()
 		if (xinput->IsButton(XINPUT_BUTTON_DPAD_DOWN) || yAxis < SHRT_MIN  / 2 || xinput->IsKey(KEY_INPUT_S)) {
 			key = 1;
 			inputVec = VAdd(inputVec, VBack);
-			direction = DOWN;
+			//direction = DOWN;
 		}
 		// 奥
 		if (xinput->IsButton(XINPUT_BUTTON_DPAD_UP) || yAxis > SHRT_MAX / 2 || xinput->IsKey(KEY_INPUT_W)) {
 			key = 1;
 			inputVec = VAdd(inputVec, VForward);
-			direction = UP;
+			//direction = UP;
 		}
 		// 左
 		if (xinput->IsButton(XINPUT_BUTTON_DPAD_LEFT) || xAxis < SHRT_MIN / 2 || xinput->IsKey(KEY_INPUT_A)) {
 			key = 1;
 			inputVec = VAdd(inputVec, VLeft);
-			direction = LEFT;
+			//direction = LEFT;
 		}
 		// 右
 		if (xinput->IsButton(XINPUT_BUTTON_DPAD_RIGHT) || xAxis > SHRT_MAX / 2 || xinput->IsKey(KEY_INPUT_D)) {
 			key = 1;
 			inputVec = VAdd(inputVec, VRight);
-			direction = RIGHT;
+			//direction = RIGHT;
 		}
 
 		// TODO アニメーションの設定
@@ -92,7 +92,6 @@ void Player::Update()
 		key = 0;
 
 		// カメラから見た方向に移動する方向ベクトルの変数を作成
-
 		// カメラのy軸回転を取得
 		float thetaY = Deg2Rad(Camera::main->GetRotation().y);
 		// カメラのY軸回転を元に行列を作成
@@ -105,17 +104,18 @@ void Player::Update()
 		position = VAdd(position, VScale(moveDirection, 10.0f));
 
 
-		// 移動方向に向ける（VGetの引数二つ目のY(0～4の整数を取る)にラジアンの90度*方向を掛ける。）
-		// 現在だとキー入力に対した直角しか回転できないので移動方向へ向けるようにする
-		// →atanでxとyのベクトルから角度を取得して格納
-		MV1SetRotationXYZ(modelHandle, VGet(0.0f, atan2f(moveDirection.x, moveDirection.z) + DX_PI_F, 0.0f));
-
+		//// 移動方向に向ける（VGetの引数二つ目のY(0～4の整数を取る)にラジアンの90度*方向を掛ける。）
+		//// 現在だとキー入力に対した直角しか回転できないので移動方向へ向けるようにする
+		//// →atanでxとyのベクトルから角度を取得して格納
+		//MV1SetRotationXYZ(modelHandle, VGet(0.0f, atan2f(moveDirection.x, moveDirection.z) + DX_PI_F, 0.0f));
+		
 	}
+
+	MV1SetMatrix(modelHandle, matrix);
 #if _DEBUG
 	printfDx(L"%f\n", rotation.y);
 #endif
 	// 指定されたハンドルのモデルのポジションを更新する
-	MV1SetPosition(modelHandle, position);
 }
 
 void Player::Render()
