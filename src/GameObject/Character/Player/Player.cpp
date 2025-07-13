@@ -106,12 +106,14 @@ void Player::Update()
 
 
 		// 移動方向に向ける（VGetの引数二つ目のY(0～4の整数を取る)にラジアンの90度*方向を掛ける。）
-		// TODO 現在だとキー入力に対した直角しか回転できないので移動方向へ向けるようにする
-		MV1SetRotationXYZ(modelHandle, VGet(0.0f, DX_PI_F / 2 * direction, 0.0f));
+		// 現在だとキー入力に対した直角しか回転できないので移動方向へ向けるようにする
+		// →atanでxとyのベクトルから角度を取得して格納
+		MV1SetRotationXYZ(modelHandle, VGet(0.0f, atan2f(moveDirection.x, moveDirection.z) + DX_PI_F, 0.0f));
 
 	}
-
+#if _DEBUG
 	printfDx(L"%f\n", rotation.y);
+#endif
 	// 指定されたハンドルのモデルのポジションを更新する
 	MV1SetPosition(modelHandle, position);
 }
