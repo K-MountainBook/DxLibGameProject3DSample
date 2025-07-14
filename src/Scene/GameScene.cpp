@@ -1,5 +1,6 @@
 #include "GameScene.h"
 #include "../GameObject/Camera/Camera.h"
+#include "../GameObject/Stage/Stage.h"
 
 #include <DxLib.h>
 #include <vector>
@@ -31,6 +32,8 @@ void GameScene::Start()
 {
 	// モデルの読み込み
 	playerModel = MV1LoadModel(L"Res\\Character\\Player\\PC.mv1");
+	// ステージの読み込み
+	stageModel = MV1LoadModel(L"Res\\Stage\\Stage01.mv1");
 
 	// プレイヤーのインスタンス化
 	Player* pPlayer = new Player();
@@ -50,11 +53,20 @@ void GameScene::Start()
 		pGameObjectArray.push_back(pPlayer);
 	}
 
-	// TODO:カメラのインスタンス化を行う
+	// カメラのインスタンス化を行う
 	Camera* pCamera = new Camera(VGet(0.0f, 200.0f, -800.0f));
 	{
 		pCamera->SetTarget(pPlayer);
 		pGameObjectArray.push_back(pCamera);
+	}
+
+	// ステージのインスタンス化
+	Stage* pStage = new Stage();
+	{
+		pStage->SetModelHandle(stageModel);
+		pStage->Register(pPlayer);
+
+		pGameObjectArray.push_back(pStage);
 	}
 }
 
@@ -73,7 +85,7 @@ void GameScene::Render()
 {
 	// 背景色
 	DrawBox(0, 0, 1280, 720, white, true);
-
+#if _DEBUG
 	// XYZラインの描画
 	// y緑、x赤、zが青
 	for (float i = -5000; i <= 5000; i += 100) {
@@ -88,7 +100,7 @@ void GameScene::Render()
 		// DrawLine3D(VGet(0, 10000, i), VGet(0, -10000, i), gray);	// Y
 
 	}
-
+#endif
 	// pGameObjectArrayにぶち込んだオブジェクトを全てレンダリングする
 	for (auto pGameObject : pGameObjectArray) {
 		pGameObject->Render();

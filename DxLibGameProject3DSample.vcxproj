@@ -20,11 +20,13 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Component\Animator.h" />
+    <ClInclude Include="src\Component\DebugDisplay.h" />
     <ClInclude Include="src\Definition.h" />
     <ClInclude Include="src\GameObject\Camera\Camera.h" />
     <ClInclude Include="src\GameObject\Character\Character.h" />
     <ClInclude Include="src\GameObject\Character\Player\Player.h" />
     <ClInclude Include="src\GameObject\GameObject.h" />
+    <ClInclude Include="src\GameObject\Stage\Stage.h" />
     <ClInclude Include="src\Manager\InputManager.h" />
     <ClInclude Include="src\Manager\SceneManager.h" />
     <ClInclude Include="src\Scene\BaseScene.h" />
@@ -32,10 +34,12 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Component\Animator.cpp" />
+    <ClCompile Include="src\Component\DebugDisplay.cpp" />
     <ClCompile Include="src\GameObject\Camera\Camera.cpp" />
     <ClCompile Include="src\GameObject\Character\Character.cpp" />
     <ClCompile Include="src\GameObject\Character\Player\Player.cpp" />
     <ClCompile Include="src\GameObject\GameObject.cpp" />
+    <ClCompile Include="src\GameObject\Stage\Stage.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\Manager\InputManager.cpp" />
     <ClCompile Include="src\Manager\SceneManager.cpp" />

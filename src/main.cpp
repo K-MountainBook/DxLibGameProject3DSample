@@ -3,6 +3,7 @@
 #include "Definition.h"
 #include "Manager/SceneManager.h"
 #include "Manager/InputManager.h"
+#include "Component/DebugDisplay.h"
 
 // プログラムは WinMain から始まります
 int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPSTR lpCmdLine, _In_ int nCmdShow)
@@ -62,6 +63,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 
 #if _DEBUG
 		InputManager::GetInstance()->DebugRender();
+		
 #endif
 
 		// mat1 = MGetRotY(DX_PI / 2 * direction);
