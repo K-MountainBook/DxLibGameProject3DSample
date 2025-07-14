@@ -5,8 +5,6 @@
 
 Player::Player(VECTOR _pos) :
 	Character(_pos, "player")
-	, inputX(0)
-	, inputY(0)
 	, key(0)
 {
 	Start();
@@ -39,8 +37,7 @@ void Player::Update()
 	// 現フレームのキー入力状況を取得する
 	xinput->GetLeftStick(&xAxis, &yAxis);
 
-	// TODO 移動方向がカメラの方向に影響されるように修正する必要がある
-	// 
+	// 移動方向がカメラの方向に影響されるように修正する必要がある 
 	// 矢印キーでも、左スティックでも動くように調整
 	{
 		// 手前
@@ -66,6 +63,10 @@ void Player::Update()
 			key = 1;
 			inputVec = VAdd(inputVec, VRight);
 			//direction = RIGHT;
+		}
+
+		if (VSquareSize(inputVec) == 0) {
+			key == 0;
 		}
 
 		// TODO アニメーションの設定
@@ -100,22 +101,27 @@ void Player::Update()
 		// 行列をベクトルに変換
 		moveDirection = VTransform(inputVec, mRot);
 
-		rotation.y = Rad2Deg(atan2f(moveDirection.x, moveDirection.z));
+		rotation.y = Rad2Deg(atan2f(moveDirection.x, moveDirection.z)) + 180;
 		position = VAdd(position, VScale(moveDirection, 10.0f));
-
 
 		//// 移動方向に向ける（VGetの引数二つ目のY(0～4の整数を取る)にラジアンの90度*方向を掛ける。）
 		//// 現在だとキー入力に対した直角しか回転できないので移動方向へ向けるようにする
 		//// →atanでxとyのベクトルから角度を取得して格納
-		//MV1SetRotationXYZ(modelHandle, VGet(0.0f, atan2f(moveDirection.x, moveDirection.z) + DX_PI_F, 0.0f));
+		// MV1SetRotationXYZ(modelHandle, VGet(0.0f, atan2f(moveDirection.x, moveDirection.z) + DX_PI_F, 0.0f));
 		
 	}
 
+	// アニメーターの更新
+	pAnimator->Update();
+	// scaleの初期化がVZeroだったので縮尺0%で表示されていたので動かなかった(表示されていなかった)
+	// VOneで初期化することで表示された
+	GameObject::Update();
 	MV1SetMatrix(modelHandle, matrix);
-#if _DEBUG
+
+#if 0
 	printfDx(L"%f\n", rotation.y);
 #endif
-	// 指定されたハンドルのモデルのポジションを更新する
+
 }
 
 void Player::Render()

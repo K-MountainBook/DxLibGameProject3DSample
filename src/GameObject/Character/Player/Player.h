@@ -11,10 +11,8 @@ public:
 	~Player();
 
 protected:
-	int inputX, inputY;
 	int key;
 	bool running = false;
-	Direction direction = DOWN;
 
 public:
 	void Start() override;

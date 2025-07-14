@@ -5,6 +5,9 @@
 
 #include "../Definition.h"
 
+/// <summary>
+/// シーン管理クラス（シングルトン）
+/// </summary>
 class SceneManager
 {
 private:

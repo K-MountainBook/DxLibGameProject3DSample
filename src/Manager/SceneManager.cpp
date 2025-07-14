@@ -4,6 +4,9 @@
 
 SceneManager* SceneManager::pInstance = nullptr;
 
+/// <summary>
+/// コンストラクタ（初めのシーンを設定する）
+/// </summary>
 SceneManager::SceneManager()
     :pCurrentScene(nullptr)
 	, next(SceneType::Game)
@@ -29,11 +32,18 @@ SceneManager::SceneManager()
 	}
 }
 
+/// <summary>
+/// インスタンスの作成
+/// </summary>
 void SceneManager::CreateInstance()
 {
 	pInstance = new SceneManager();
 }
 
+/// <summary>
+/// インスタンスの取得
+/// </summary>
+/// <returns></returns>
 SceneManager* SceneManager::GetInstance()
 {
 	if (pInstance == nullptr) {
@@ -43,16 +53,26 @@ SceneManager* SceneManager::GetInstance()
 	return pInstance;
 }
 
+/// <summary>
+/// インスタンスの破棄
+/// </summary>
 void SceneManager::DestroyInstance()
 {
 }
 
-
+/// <summary>
+/// 次のシーンを設定する
+/// </summary>
+/// <param name="_next">SceneType</param>
 void SceneManager::SetNext(SceneType _next)
 {
 	next = _next;
 }
 
+/// <summary>
+/// シーンの状態をUpdate
+/// また、次のシーンが設定されていればシーン遷移と読み込みを行う
+/// </summary>
 void SceneManager::Update() {
 	if (pCurrentScene == nullptr) {
 		return;
@@ -67,6 +87,9 @@ void SceneManager::Update() {
 
 }
 
+/// <summary>
+/// シーンのレンダリング
+/// </summary>
 void SceneManager::Render() {
 
 	if (pCurrentScene == nullptr) {
@@ -76,8 +99,14 @@ void SceneManager::Render() {
 	pCurrentScene->Render();
 }
 
+/// <summary>
+/// シーンの読み込み
+/// </summary>
 void SceneManager::LoadScene()
 {
+
+	current = next;
+
 	delete pCurrentScene;
 
 	pCurrentScene = nullptr;
@@ -101,5 +130,4 @@ void SceneManager::LoadScene()
 		break;
 	}
 
-	current = next;
 }

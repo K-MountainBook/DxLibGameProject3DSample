@@ -4,6 +4,11 @@
 
 Camera* Camera::main = nullptr;
 
+/// <summary>
+/// コンストラクタ
+/// </summary>
+/// <param name="_pos">カメラの座標</param>
+/// <param name="_length">カメラの距離</param>
 Camera::Camera(VECTOR _pos, float _length)
 	:GameObject(_pos)
 	, pTarget(nullptr)
@@ -24,15 +29,21 @@ Camera::Camera(VECTOR _pos, float _length)
 
 	main = this;
 }
-
+/// <summary>
+/// デストラクタ
+/// </summary>
 Camera::~Camera()
 {
 }
-
+/// <summary>
+/// 初期処理
+/// </summary>
 void Camera::Start()
 {
 }
-
+/// <summary>
+/// 更新
+/// </summary>
 void Camera::Update()
 {
 	// inputManagerの情報を読みだすための強引な呼び出し
@@ -87,12 +98,13 @@ void Camera::Update()
 	);
 
 	// 半径を定数倍して距離を合わせる
-	sphere = VScale(sphere, 200.0f);
+	sphere = VScale(sphere, armLength);
 	// カメラターゲットのポジションを足しこんで位置を調整する
 	sphere = VAdd(sphere, pTarget->GetPosition());
 	// カメラのポジションを決定する。
 	position = sphere;
-
+	
+	// 親クラスの更新
 	GameObject::Update();
 
 	// カメラの位置と回転の設定を行う
@@ -101,9 +113,11 @@ void Camera::Update()
 	);
 }
 
+/// <summary>
+/// 描画
+/// </summary>
 void Camera::Render()
 {
-
 #if _DEBUG
 	DrawFormatString(0, 200, red, L"Camera.position : %.2f, %.2f, %.2f,", position.x, position.y, position.z);
 	DrawFormatString(0, 220, red, L"Camera.rotation : %.2f, %.2f, %.2f,", rotation.x, rotation.y, rotation.z);
@@ -112,6 +126,12 @@ void Camera::Render()
 
 }
 
+/// <summary>
+/// カメラの揺れ（未実装）
+/// </summary>
+/// <param name="_direction"></param>
+/// <param name="_time"></param>
+/// <param name="_power"></param>
 void Camera::Shake(int _direction, float _time, float _power)
 {
 }

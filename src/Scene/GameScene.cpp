@@ -17,7 +17,6 @@ GameScene::GameScene()
 	,pPlayer(nullptr)
 {
 	Start();
-	Update();
 }
 
 /// <summary>
@@ -37,11 +36,15 @@ void GameScene::Start()
 	Player* pPlayer = new Player();
 	{
 		this->pPlayer = pPlayer;
+
 		pPlayer->SetModelHandle(playerModel);
+		
+		pPlayer->GetAnimator()->SetModelHandle(playerModel);
 		// アニメの読み込み（待機モーション）
 		pPlayer->GetAnimator()->Load(L"Res\\Character\\Player\\Anim_Neutral.mv1", true);
 		// アニメの読み込み（走りモーション）
 		pPlayer->GetAnimator()->Load(L"Res\\Character\\Player\\Anim_Run.mv1", true);
+		
 		pPlayer->GetAnimator()->Play(0);
 
 		pGameObjectArray.push_back(pPlayer);

@@ -2,11 +2,14 @@
 #include "../GameObject.h"
 #include "../../Component/Animator.h"
 
+/// <summary>
+/// キャラクタクラス
+/// </summary>
 class Character : public GameObject
 {
 protected:
-	int modelHandle;
-	Animator* pAnimator;
+	int modelHandle;		// モデルのハンドル
+	Animator* pAnimator;	// アニメータ
 
 public:
 	// コンストラクタ
