@@ -35,14 +35,11 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 	LONGLONG prevFrameTime = 0;
 	float fps = 0.0f;
 
-
 	// 書き込み先をバックバッファに設定
 	SetDrawScreen(DX_SCREEN_BACK);
 
 	// カメラの設定
 	SetCameraPositionAndTargetAndUpVec(cpos, ctgt, VGet(0.0f, 1.0f, 0.0f));
-
-	// SceneManager::GetInstance()->SetNext(SceneType::Game);
 
 	// メインループ
 	while (ProcessMessage() == 0 && CheckHitKey(KEY_INPUT_ESCAPE) == 0) {
@@ -65,11 +62,6 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 		InputManager::GetInstance()->DebugRender();
 		
 #endif
-
-		// mat1 = MGetRotY(DX_PI / 2 * direction);
-		// mat2 = MGetTranslate(pos);
-		// MV1SetMatrix(model1, MMult(mat1, mat2));
-
 		// 前フレームからの経過時間を取得する
 		LONGLONG deltaTime = (frameRateAdjCounter - prevFrameTime);
 

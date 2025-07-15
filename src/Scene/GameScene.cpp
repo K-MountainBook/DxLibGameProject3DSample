@@ -33,7 +33,7 @@ void GameScene::Start()
 	// モデルの読み込み
 	playerModel = MV1LoadModel(L"Res\\Character\\Player\\PC.mv1");
 	// ステージの読み込み
-	stageModel = MV1LoadModel(L"Res\\Stage\\Stage01.mv1");
+	stageModel = MV1LoadModel(L"Res\\Stage\\Stage00.mv1");
 
 	// プレイヤーのインスタンス化
 	Player* pPlayer = new Player();
@@ -64,6 +64,7 @@ void GameScene::Start()
 	Stage* pStage = new Stage();
 	{
 		pStage->SetModelHandle(stageModel);
+		// 地形上にある物体を登録する（接地判定のため）
 		pStage->Register(pPlayer);
 
 		pGameObjectArray.push_back(pStage);

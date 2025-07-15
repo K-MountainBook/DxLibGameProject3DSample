@@ -25,9 +25,33 @@ void Stage::Update()
 		for (int j = 0; j < MV1GetTriangleListPolygonNum(modelHandle, i); j++) {
 			VECTOR vertexs[3] = {};
 			MV1GetTriangleListPolygonVertexPosition(modelHandle, i, j, vertexs);
+
+			// positionに頂点座標を足したものを作る
+			vertexs[0] = VAdd(position, vertexs[0]);
+			vertexs[1] = VAdd(position, vertexs[1]);
+			vertexs[2] = VAdd(position, vertexs[2]);
+
+			// 登録された接地オブジェクト
+			for(auto pObj:onGroundObjectArray){
+			// 接地判定
+				VECTOR rayOrigin = VAdd(pObj->GetPosition(), VScale(VUp, 120));
+				VECTOR rayEnd = VAdd(pObj->GetPosition(), VScale(VDown, 150));
+				// rayOrigin→rayEndの線がvertexsの3点が形成する三角にHITするかの確認
+				auto hit = HitCheck_Line_Triangle(
+					rayOrigin, rayEnd,
+					vertexs[0], vertexs[1], vertexs[2]);
+
+				// HitFlagがONであったら、
+				if (hit.HitFlag) {
+					pObj->SetPosition(
+						pObj->GetPosition().x,
+						hit.Position.y,
+						pObj->GetPosition().z
+					);
+				}
+			}
 		}
 	}
-
 #if 0
 	int sum = 0;
 	for (int i = 0; i < MV1GetTriangleListNum(modelHandle); i++) {
