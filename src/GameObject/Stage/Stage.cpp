@@ -19,7 +19,8 @@ void Stage::Start()
 
 void Stage::Update()
 {
-	// TODO トライアングルリストとはなんぞや
+	// トライアングルリストとはなんぞや
+	// →モデルビューアで確認できるメッシュの塊（テクスチャが同じメッシュ？）
 	for (int i = 0; i < MV1GetTriangleListNum(modelHandle); i++) {
 		for (int j = 0; j < MV1GetTriangleListPolygonNum(modelHandle, i); j++) {
 			VECTOR vertexs[3] = {};
@@ -27,7 +28,7 @@ void Stage::Update()
 		}
 	}
 
-#if _DEBUG
+#if 0
 	int sum = 0;
 	for (int i = 0; i < MV1GetTriangleListNum(modelHandle); i++) {
 		// これで対象モデルのポリゴンの合計数が計算できる
