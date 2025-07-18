@@ -41,13 +41,10 @@ void Stage::Update()
 					rayOrigin, rayEnd,
 					vertexs[0], vertexs[1], vertexs[2]);
 
-				// HitFlagがONであったら、
+				// HitFlagがtrueであった場合登録された接地オブジェクトのy軸を
+				// hitした位置（接地位置）の値に入れ替える
 				if (hit.HitFlag) {
-					pObj->SetPosition(
-						pObj->GetPosition().x,
-						hit.Position.y,
-						pObj->GetPosition().z
-					);
+					pObj->SetPosition(pObj->GetPosition().x, hit.Position.y, pObj->GetPosition().z);
 				}
 			}
 		}

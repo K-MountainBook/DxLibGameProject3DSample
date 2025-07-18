@@ -64,7 +64,7 @@ void GameScene::Start()
 	Stage* pStage = new Stage();
 	{
 		pStage->SetModelHandle(stageModel);
-		// 地形上にある物体を登録する（接地判定のため）
+		// 移動で地形の起伏の影響を受ける物体を登録する（接地判定のため）
 		pStage->Register(pPlayer);
 
 		pGameObjectArray.push_back(pStage);
