@@ -66,5 +66,6 @@ void Stage::Render()
 
 void Stage::Register(GameObject* _pObj)
 {
+	// VECTOR型の変数に地形の影響を受けるオブジェクトを登録する
 	onGroundObjectArray.push_back(_pObj);
 }
