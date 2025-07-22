@@ -47,7 +47,9 @@ void GameScene::Start()
 		pPlayer->GetAnimator()->Load(L"Res\\Character\\Player\\Anim_Neutral.mv1", true);
 		// アニメの読み込み（走りモーション）
 		pPlayer->GetAnimator()->Load(L"Res\\Character\\Player\\Anim_Run.mv1", true);
-		
+		// アニメの読み込み（攻撃モーション）
+		pPlayer->GetAnimator()->Load(L"Res\\Character\\Player\\Anim_Attack1.mv1");
+
 		pPlayer->GetAnimator()->Play(0);
 
 		pGameObjectArray.push_back(pPlayer);
