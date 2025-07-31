@@ -1,5 +1,6 @@
 #include "SceneManager.h"
 #include "../Scene/GameScene.h"
+#include "../Scene/TitleScene.h"
 #
 
 SceneManager* SceneManager::pInstance = nullptr;
@@ -9,27 +10,10 @@ SceneManager* SceneManager::pInstance = nullptr;
 /// </summary>
 SceneManager::SceneManager()
     :pCurrentScene(nullptr)
-	, next(SceneType::Game)
+	, next(SceneType::Title)
 	, current((SceneType)INVALID)
 {
-	switch (next)
-	{
-	case SceneType::Title:
-		pCurrentScene = nullptr;
-		break;
-	case SceneType::Game:
-		pCurrentScene = new GameScene;
-		break;
-	case SceneType::Clear:
-		pCurrentScene = nullptr;
-		break;
-	case SceneType::GameOver:
-		pCurrentScene = nullptr;
-		break;
-	default:
-		pCurrentScene = nullptr;
-		break;
-	}
+	LoadScene();
 }
 
 /// <summary>
@@ -114,10 +98,10 @@ void SceneManager::LoadScene()
 	switch (next)
 	{
 	case SceneType::Title:
-		pCurrentScene = nullptr;
+		pCurrentScene = new TitleScene();
 		break;
 	case SceneType::Game:
-		pCurrentScene = new GameScene;
+		pCurrentScene = new GameScene();
 		break;
 	case SceneType::Clear:
 		pCurrentScene = nullptr;

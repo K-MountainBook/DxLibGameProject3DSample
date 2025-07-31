@@ -36,6 +36,9 @@
       <Filter>Component</Filter>
     </ClInclude>
     <ClInclude Include="src\GameObject\Weapon\Weapon.h" />
+    <ClInclude Include="src\Scene\TitleScene.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp" />
@@ -70,6 +73,9 @@
       <Filter>Component</Filter>
     </ClCompile>
     <ClCompile Include="src\GameObject\Weapon\Weapon.cpp" />
+    <ClCompile Include="src\Scene\TitleScene.cpp">
+      <Filter>Scene</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Component">
