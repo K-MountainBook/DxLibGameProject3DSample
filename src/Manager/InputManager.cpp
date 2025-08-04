@@ -1,4 +1,5 @@
 #include "InputManager.h"
+#include "../GameObject/Camera/Camera.h"
 
 InputManager* InputManager::pInstance = nullptr;
 
@@ -46,4 +47,7 @@ void InputManager::DebugRender() {
 	DrawFormatString(0, 80, red, L"RihgtStickAxisY:%d", xinput.ThumbRY);
 	DrawFormatString(0, 100, red, L"LeftTrigger:%d", xinput.LeftTrigger);
 	DrawFormatString(0, 120, red, L"RightTrigger:%d", xinput.RightTrigger);
+
+#if _DEBUG
+#endif
 }

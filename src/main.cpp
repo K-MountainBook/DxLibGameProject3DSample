@@ -41,6 +41,9 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 	// カメラの設定
 	SetCameraPositionAndTargetAndUpVec(cpos, ctgt, VGet(0.0f, 1.0f, 0.0f));
 
+	// デバッグにインプットマネージャーをセット
+	DebugDisplay::GetInstance()->SetInputManager(InputManager::GetInstance());
+
 	// メインループ
 	while (ProcessMessage() == 0 && CheckHitKey(KEY_INPUT_ESCAPE) == 0) {
 
@@ -50,7 +53,6 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 		// update
 		InputManager::GetInstance()->Update();
 		SceneManager::GetInstance()->Update();
-		
 
 		ClearDrawScreen();
 		// メイン処理を記載
@@ -58,10 +60,10 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 
 		SceneManager::GetInstance()->Render();
 
-#if _DEBUG
-		InputManager::GetInstance()->DebugRender();
-		
-#endif
+
+		DebugDisplay::GetInstance()->Render();
+
+
 		// 前フレームからの経過時間を取得する
 		LONGLONG deltaTime = (frameRateAdjCounter - prevFrameTime);
 

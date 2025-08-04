@@ -3,6 +3,10 @@
 #include "../../../Manager/InputManager.h"
 #include "../../Camera/Camera.h"
 
+/// <summary>
+/// プレイヤーコンストラクタ
+/// </summary>
+/// <param name="_pos"></param>
 Player::Player(VECTOR _pos) :
 	Character(_pos, "player")
 	, key(0)
@@ -10,10 +14,16 @@ Player::Player(VECTOR _pos) :
 	Start();
 }
 
+/// <summary>
+/// プレイヤーデストラクタ
+/// </summary>
 Player::~Player()
 {
 }
 
+/// <summary>
+/// 初期化処理
+/// </summary>
 void Player::Start()
 {
 	if (!isVisible) {
@@ -23,6 +33,9 @@ void Player::Start()
 	rotation.y = 180;
 }
 
+/// <summary>
+/// データ更新処理
+/// </summary>
 void Player::Update()
 {
 	if (!isVisible) {
@@ -124,6 +137,9 @@ void Player::Update()
 
 }
 
+/// <summary>
+/// 描画処理
+/// </summary>
 void Player::Render()
 {
 	if (!isVisible) {
@@ -131,7 +147,5 @@ void Player::Render()
 	}
 
 	MV1DrawModel(modelHandle);
-
-	DrawFormatString(100, 0, red, L"X:%f, Y:%f, Z:%f", position.x, position.y, position.z);
 
 }

@@ -4,7 +4,9 @@ class GameScene : public BaseScene
 {
 protected:
 	int playerModel;
+	int enemyModel;
 	int stageModel;
+	int playerWeaponModel;
 
 	int shadowMapHandle;
 	const VECTOR shadowOffset = VGet(512, 512, 512);

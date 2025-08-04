@@ -94,6 +94,10 @@ public:
 		*pPressure = xinput.RightTrigger;
 	}
 
+	XINPUT_STATE GetXinput() {
+		return xinput;
+	}
+
 };
 
 #endif // UNIQUE_INPUTMANAGER

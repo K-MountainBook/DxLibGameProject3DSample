@@ -1,20 +1,26 @@
 #include "GameScene.h"
 #include "../GameObject/Camera/Camera.h"
 #include "../GameObject/Stage/Stage.h"
+#include "../Component/DebugDisplay.h"
 
 #include <DxLib.h>
 #include <vector>
 
 #include "../Definition.h"
 #include "../GameObject/Character/Player/Player.h"
+#include "../GameObject/Character/Enemy/Goblin/Goblin.h"
+#include "../GameObject/Character/Character.h"
+#include "../GameObject/Weapon/Weapon.h"
 
 /// <summary>
 /// コンストラクタの実装
 /// </summary>
 GameScene::GameScene()
 	:playerModel(INVALID)
+	, enemyModel(INVALID)
 	, stageModel(INVALID)
-	,shadowMapHandle(INVALID)
+	, shadowMapHandle(INVALID)
+	, playerWeaponModel(INVALID)
 	,pPlayer(nullptr)
 {
 	Start();
@@ -32,8 +38,11 @@ void GameScene::Start()
 {
 	// モデルの読み込み
 	playerModel = MV1LoadModel(L"Res\\Character\\Player\\PC.mv1");
+	enemyModel = MV1LoadModel(L"Res\\Character\\Goblin\\Goblin.mv1");
 	// ステージの読み込み
 	stageModel = MV1LoadModel(L"Res\\Stage\\Stage00.mv1");
+	// 武器モデルの読み込み
+	playerWeaponModel = MV1LoadModel(L"Res\\Character\\Weapon\\Sabel\\sabel.mv1");
 
 	// プレイヤーのインスタンス化
 	Player* pPlayer = new Player();
@@ -53,13 +62,36 @@ void GameScene::Start()
 		pPlayer->GetAnimator()->Play(0);
 
 		pGameObjectArray.push_back(pPlayer);
+		DebugDisplay::GetInstance()->SetPlayer(pPlayer);
 	}
+
+	// 武器のインスタンス化
+	Weapon* pSabel = new Weapon();
+	{
+		pPlayer->SetWeapon(pSabel);
+		pPlayer->GetWeapon()->Attach(playerModel, playerWeaponModel, L"wp");
+
+		pGameObjectArray.push_back(pPlayer->GetWeapon());
+	}
+
+	// ゴブリンのインスタンス化
+	Goblin* pGoblin = new Goblin(VZero);
+	{
+		pGoblin->SetModelHandle(enemyModel);
+		pGoblin->GetAnimator()->SetModelHandle(enemyModel);
+		pGoblin->GetAnimator()->Load(L"Res\\Character\\Goblin\\Anim_Neutral.mv1", true);
+		pGoblin->GetAnimator()->Play(0);
+
+		pGameObjectArray.push_back(pGoblin);
+	}
+	
 
 	// カメラのインスタンス化を行う
 	Camera* pCamera = new Camera(VGet(0.0f, 200.0f, -800.0f));
 	{
 		pCamera->SetTarget(pPlayer);
 		pGameObjectArray.push_back(pCamera);
+		DebugDisplay::GetInstance()->SetCameraInfo(pCamera);
 	}
 
 	// ステージのインスタンス化
@@ -68,6 +100,7 @@ void GameScene::Start()
 		pStage->SetModelHandle(stageModel);
 		// 移動で地形の起伏の影響を受ける物体を登録する（接地判定のため）
 		pStage->Register(pPlayer);
+		pStage->Register(pGoblin);
 
 		pGameObjectArray.push_back(pStage);
 	}
@@ -108,5 +141,6 @@ void GameScene::Render()
 	for (auto pGameObject : pGameObjectArray) {
 		pGameObject->Render();
 	}
+
 
 }

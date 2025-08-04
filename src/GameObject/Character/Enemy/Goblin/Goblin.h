@@ -1,24 +1,19 @@
 #pragma once
-#include "../Character.h"
-#include "../../Weapon/Weapon.h"
+#include "../../Character.h"
+#include "../../../Weapon/Weapon.h"
 
-class Player : public Character
+class Goblin : public Character
 {
 private:
-	bool isAttacking;
 	Weapon* pWeapon;
 
+	std::vector<VECTOR> wayPoints;
+	int index;
+
 public:
-	
-	// コンストラクタ
-	Player(VECTOR _pos = VZero);
+	Goblin(VECTOR _pos = VZero);
 
-	// デストラクタ
-	~Player();
-
-protected:
-	int key;
-	bool running = false;
+	~Goblin();
 
 public:
 	void Start() override;
@@ -28,6 +23,7 @@ public:
 	void Render() override;
 
 public:
+
 	inline Weapon* GetWeapon() const { return pWeapon; }
 
 	inline void SetWeapon(Weapon* _weapon) {

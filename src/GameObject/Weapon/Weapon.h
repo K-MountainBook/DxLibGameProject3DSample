@@ -26,7 +26,7 @@ public:
 
 public:
 
-	void Attach(int& _attachiModel, int& _weaponModel, std::string _frameName);
+	void Attach(int& _attachiModel, int& _weaponModel, std::wstring _frameName);
 
 };
 

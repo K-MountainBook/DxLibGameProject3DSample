@@ -1,6 +1,7 @@
 #include "Camera.h"
 #include "../../Manager/InputManager.h"
 #include "../../Definition.h"
+#include "../../Component/DebugDisplay.h"
 
 Camera* Camera::main = nullptr;
 
@@ -111,6 +112,10 @@ void Camera::Update()
 	SetCameraPositionAndAngle(
 		VAdd(position, offset), Deg2Rad(rotation.x), Deg2Rad(rotation.y), Deg2Rad(rotation.z)
 	);
+
+	DebugDisplay* temp = DebugDisplay::GetInstance();
+
+	temp->SetCameraInfo(this);
 }
 
 /// <summary>
@@ -118,10 +123,6 @@ void Camera::Update()
 /// </summary>
 void Camera::Render()
 {
-#if _DEBUG
-	DrawFormatString(0, 200, red, L"Camera.position : %.2f, %.2f, %.2f,", position.x, position.y, position.z);
-	DrawFormatString(0, 220, red, L"Camera.rotation : %.2f, %.2f, %.2f,", rotation.x, rotation.y, rotation.z);
-#endif
 	// SetCameraPositionAndTarget_UpVecY(position, pTarget->GetPosition());
 
 }
