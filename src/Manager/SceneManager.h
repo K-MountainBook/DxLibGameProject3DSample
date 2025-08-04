@@ -4,6 +4,7 @@
 
 
 #include "../Definition.h"
+#include <string>
 
 /// <summary>
 /// シーン管理クラス（シングルトン）
@@ -49,6 +50,28 @@ public:
 
 public:
 	void SetNext(SceneType _next);
+
+	std::wstring GetCurrentScene() {
+		std::wstring temp = L"";
+		switch (current)
+		{
+		case SceneType::Title:
+			temp = L"Title";
+			break;
+		case SceneType::Game:
+			temp = L"Game";
+			break;
+		case SceneType::Clear:
+			temp = L"Clear";
+			break;
+		case SceneType::GameOver:
+			temp = L"GameOver";
+			break;
+		default:
+			break;
+		}
+		return temp;
+	}
 };
 
 

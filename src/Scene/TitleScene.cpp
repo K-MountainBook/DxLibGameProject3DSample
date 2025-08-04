@@ -39,5 +39,5 @@ void TitleScene::Update()
 /// </summary>
 void TitleScene::Render()
 {
-	DrawString(0, 0, L"TitleScene", red);
+
 }

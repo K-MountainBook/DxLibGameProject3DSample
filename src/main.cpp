@@ -17,11 +17,6 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 	VECTOR ctgt = VGet(0.0f, 0.0f, 400.0f);
 	bool running = false;
 
-	// XINPUT_STATE xinput;
-	//int inputX, inputY;
-
-	//MATRIX mat1, mat2;
-
 	SetGraphMode(WINDOW_WIDTH_HD, WINDOW_HEIGHT_HD, 32, FPS_60);
 	ChangeWindowMode(TRUE);
 
@@ -41,8 +36,9 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 	// カメラの設定
 	SetCameraPositionAndTargetAndUpVec(cpos, ctgt, VGet(0.0f, 1.0f, 0.0f));
 
-	// デバッグにインプットマネージャーをセット
+	// デバッグにインプットマネージャーとシーンマネージャーをセット
 	DebugDisplay::GetInstance()->SetInputManager(InputManager::GetInstance());
+	DebugDisplay::GetInstance()->SetSceneManager(SceneManager::GetInstance());
 
 	// メインループ
 	while (ProcessMessage() == 0 && CheckHitKey(KEY_INPUT_ESCAPE) == 0) {
@@ -55,19 +51,17 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 		SceneManager::GetInstance()->Update();
 
 		ClearDrawScreen();
-		// メイン処理を記載
-		// 背景の描画
 
 		SceneManager::GetInstance()->Render();
 
-
+#if _DEBUG
 		DebugDisplay::GetInstance()->Render();
-
+#endif
 
 		// 前フレームからの経過時間を取得する
 		LONGLONG deltaTime = (frameRateAdjCounter - prevFrameTime);
 
-		DrawFormatString(0, 0, red, L"FPS:%.2f", ((float)1.0f / (float)deltaTime) * 1000000.0f);
+		DrawFormatString(0, 700, red, L"FPS:%.2f", ((float)1.0f / (float)deltaTime) * 1000000.0f);
 
 		// スクリーンバッファの入れ替え
 		ScreenFlip();

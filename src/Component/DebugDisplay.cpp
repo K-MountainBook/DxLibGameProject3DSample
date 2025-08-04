@@ -6,6 +6,7 @@ DebugDisplay::DebugDisplay()
 	: player(nullptr)
 	, camera(nullptr)
 	, input(nullptr)
+	, scene(nullptr)
 {
 		
 }
@@ -31,7 +32,14 @@ void DebugDisplay::Update()
 
 void DebugDisplay::Render()
 {	
-	if(input != nullptr){
+
+	// シーンのデバッグ表示
+	if (scene != nullptr) {
+		DrawFormatString(0, 0, red, L"CurrentScene:%s", SceneManager::GetInstance()->GetCurrentScene().c_str());
+	}
+
+	// 入力のデバッグ表示
+	if (input != nullptr) {
 		DrawFormatString(0, 20, red, L"LeftStickAxisX:%d", input->GetXinput().ThumbLX);
 		DrawFormatString(0, 40, red, L"LeftStickAxisY:%d", input->GetXinput().ThumbLY);
 		DrawFormatString(0, 60, red, L"RightStickAxisX:%d", input->GetXinput().ThumbRX);
@@ -40,10 +48,12 @@ void DebugDisplay::Render()
 		DrawFormatString(0, 120, red, L"RightTrigger:%d", input->GetXinput().RightTrigger);
 	}
 
-	if(player != nullptr){
-		DrawFormatString(100, 0, red, L"X:%f, Y:%f, Z:%f", player->GetPosition().x, player->GetPosition().y, player->GetPosition().z);
+	// プレイヤーの座標表示
+	if (player != nullptr) {
+		DrawFormatString(0, 160, red, L"Player position:\nX:%f, Y:%f, Z:%f", player->GetPosition().x, player->GetPosition().y, player->GetPosition().z);
 	}
 
+	// カメラの座標表示
 	if(camera != nullptr){
 		DrawFormatString(0, 200, red, L"Camera.position : %.2f, %.2f, %.2f,", camera->GetPosition().x, camera->GetPosition().y, camera->GetPosition().z);
 		DrawFormatString(0, 220, red, L"Camera.rotation : %.2f, %.2f, %.2f,", camera->GetRotation().x, camera->GetRotation().y, camera->GetRotation().z);
