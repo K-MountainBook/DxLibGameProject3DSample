@@ -40,7 +40,9 @@ private:
 	InputManager* input;
 	SceneManager* scene;
 
+	
 public:
+	// プロトタイプ宣言
 	void Update();
 	void Render();
 

@@ -2,6 +2,8 @@
 #include "../../Character.h"
 #include "../../../Weapon/Weapon.h"
 
+#define MOVE_SPEED (5)
+
 class Goblin : public Character
 {
 private:

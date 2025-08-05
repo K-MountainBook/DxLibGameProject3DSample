@@ -21,6 +21,7 @@ GameScene::GameScene()
 	, stageModel(INVALID)
 	, shadowMapHandle(INVALID)
 	, playerWeaponModel(INVALID)
+	, enemyWeaponModel(INVALID)
 	,pPlayer(nullptr)
 {
 	Start();
@@ -43,6 +44,7 @@ void GameScene::Start()
 	stageModel = MV1LoadModel(L"Res\\Stage\\Stage00.mv1");
 	// 武器モデルの読み込み
 	playerWeaponModel = MV1LoadModel(L"Res\\Character\\Weapon\\Sabel\\sabel.mv1");
+	enemyWeaponModel = MV1LoadModel(L"Res\\Character\\Weapon\\Axe\\Axe.mv1");
 
 	// プレイヤーのインスタンス化
 	Player* pPlayer = new Player();
@@ -85,6 +87,13 @@ void GameScene::Start()
 		pGameObjectArray.push_back(pGoblin);
 	}
 	
+	Weapon* pAxe = new Weapon();
+	{
+		pGoblin->SetWeapon(pAxe);
+		pGoblin->GetWeapon()->Attach(enemyModel, enemyWeaponModel, L"hansocketR");
+
+		pGameObjectArray.push_back(pGoblin->GetWeapon());
+	}
 
 	// カメラのインスタンス化を行う
 	Camera* pCamera = new Camera(VGet(0.0f, 200.0f, -800.0f));

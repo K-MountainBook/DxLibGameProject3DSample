@@ -39,6 +39,9 @@
     <ClInclude Include="src\Scene\TitleScene.h">
       <Filter>Scene</Filter>
     </ClInclude>
+    <ClInclude Include="src\GameObject\Character\Enemy\Goblin\Goblin.h">
+      <Filter>GameObject\Character\Enemy\Goblin</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp" />
@@ -76,6 +79,9 @@
     <ClCompile Include="src\Scene\TitleScene.cpp">
       <Filter>Scene</Filter>
     </ClCompile>
+    <ClCompile Include="src\GameObject\Character\Enemy\Goblin\Goblin.cpp">
+      <Filter>GameObject\Character\Enemy\Goblin</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Component">
@@ -104,6 +110,12 @@
     </Filter>
     <Filter Include="GameObject\Character\Weapon">
       <UniqueIdentifier>{57038812-27c5-4721-bbd4-d94eefac7c3e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameObject\Character\Enemy">
+      <UniqueIdentifier>{84085896-0644-4b15-a927-7b0bbe864dbb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameObject\Character\Enemy\Goblin">
+      <UniqueIdentifier>{b23d317d-fa89-4191-b317-564a339a20c6}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

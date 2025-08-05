@@ -7,8 +7,8 @@
 /// プレイヤーコンストラクタ
 /// </summary>
 /// <param name="_pos"></param>
-Player::Player(VECTOR _pos) :
-	Character(_pos, "player")
+Player::Player(VECTOR _pos) 
+	: Character(_pos, "player")
 	, key(0)
 {
 	Start();
@@ -82,11 +82,11 @@ void Player::Update()
 			key == 0;
 		}
 
-		// TODO アニメーションの設定
+		// キーが入力されている場合に走るアニメーションを再生し
+		// キーが入力されていない場合は停止アニメーションを再生する
 		if (key == 0) {
 			if (running == true) {
 				running = false;
-				// TODO:アニメーションの処理の記述
 				pAnimator->Play(0);
 			}
 		}
@@ -130,10 +130,6 @@ void Player::Update()
 	// VOneで初期化することで表示された
 	GameObject::Update();
 	MV1SetMatrix(modelHandle, matrix);
-
-#if 0
-	printfDx(L"%f\n", rotation.y);
-#endif
 
 }
 

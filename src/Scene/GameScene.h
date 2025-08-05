@@ -7,6 +7,7 @@ protected:
 	int enemyModel;
 	int stageModel;
 	int playerWeaponModel;
+	int enemyWeaponModel;
 
 	int shadowMapHandle;
 	const VECTOR shadowOffset = VGet(512, 512, 512);
