@@ -79,7 +79,7 @@ void Player::Update()
 		}
 
 		if (VSquareSize(inputVec) == 0) {
-			key == 0;
+			key = 0;
 		}
 
 		// キーが入力されている場合に走るアニメーションを再生し
