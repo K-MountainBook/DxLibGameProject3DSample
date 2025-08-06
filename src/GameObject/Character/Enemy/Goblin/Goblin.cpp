@@ -62,35 +62,6 @@ void Goblin::Update()
 	// ベクトルの方向から回転角度を算出する
 	rotation.y = Rad2Deg(atan2f(subPos.x, subPos.z));
 
-	// 目的地の場所に応じて切り返しの条件を分ける
-	//switch (index)
-	//{
-	//case 0:
-	//	if (position.x <= wayPoints[index].x && position.z <= wayPoints[index].z) {
-	//		index++;
-	//		index = index % wayPoints.size();
-	//	}
-	//	break;
-	//case 1:
-	//	if (position.x <= wayPoints[index].x && position.z >= wayPoints[index].z) {
-	//		index++;
-	//		index = index % wayPoints.size();
-	//	}
-	//	break;
-	//case 2:
-	//	if (position.x >= wayPoints[index].x && position.z >= wayPoints[index].z) {
-	//		index++;
-	//		index = index % wayPoints.size();
-	//	}
-	//	break;
-	//case 3:
-	//	if (position.x >= wayPoints[index].x && position.z <= wayPoints[index].z) {
-	//		index++;
-	//		index = index % wayPoints.size();
-	//	}
-	//	break;
-	//}
-
 	// 絶対値が1000を超えたら切り返しにしてみる
 	if (abs(position.x) >= 1000 && abs(position.z) >= 1000) {
 		index++;

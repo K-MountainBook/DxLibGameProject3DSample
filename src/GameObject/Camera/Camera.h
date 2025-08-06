@@ -20,7 +20,7 @@ private:
 	short RStickX;
 	short RStickY;
 
-	unsigned char LTrigger;
+	unsigned char LTrigger;	
 	unsigned char RTrigger;
 
 public:
@@ -34,6 +34,9 @@ public:
 	/// <param name="_length">カメラの距離</param>
 	Camera(VECTOR _pos = VZero, float _length = 500.0f);
 
+	/// <summary>
+	/// デストラクタ
+	/// </summary>
 	~Camera();
 
 public:

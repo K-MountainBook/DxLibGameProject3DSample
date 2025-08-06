@@ -17,6 +17,12 @@ public:
 
 	int transtion;
 public:
+	/// <summary>
+	/// コンストラクタ
+	/// </summary>
+	/// <param name="_animHandle">アニメーションハンドル</param>
+	/// <param name="_isLoop">アニメのループの有無</param>
+	/// <param name="_transition"></param>
 	AnimationClip(int _animHandle, bool _isLoop = false, int _transition = 0)
 		:animationHandle(_animHandle),
 		playTime(0.0f),
@@ -26,6 +32,9 @@ public:
 		transtion(_transition) {
 	}
 
+	/// <summary>
+	/// デストラクタ
+	/// </summary>
 	~AnimationClip() {
 		MV1DeleteModel(animationHandle);
 	}
@@ -38,14 +47,20 @@ public:
 class Animator
 {
 private:
-	int animationModelHandle;			// アニメーションをさせるモデルのハンドル
+	int animationModelHandle;					// アニメーションをさせるモデルのハンドル
 	std::vector<AnimationClip*> pAnimations;	// アニメーションクリップの配列
 	int currentAnimationHandle;					// 現在再生しているアニメーションのハンドル
 	bool isPlaying;								// 再生中フラグ
 
 public:
+	/// <summary>
+	/// コンストラクタ
+	/// </summary>
 	Animator();
 
+	/// <summary>
+	/// デストラクタ
+	/// </summary>
 	~Animator();
 
 public:

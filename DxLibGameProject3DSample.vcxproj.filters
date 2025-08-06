@@ -35,12 +35,14 @@
     <ClInclude Include="src\Component\DebugDisplay.h">
       <Filter>Component</Filter>
     </ClInclude>
-    <ClInclude Include="src\GameObject\Weapon\Weapon.h" />
     <ClInclude Include="src\Scene\TitleScene.h">
       <Filter>Scene</Filter>
     </ClInclude>
     <ClInclude Include="src\GameObject\Character\Enemy\Goblin\Goblin.h">
       <Filter>GameObject\Character\Enemy\Goblin</Filter>
+    </ClInclude>
+    <ClInclude Include="src\GameObject\Weapon\Weapon.h">
+      <Filter>GameObject\Character\Weapon</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -75,12 +77,14 @@
     <ClCompile Include="src\Component\DebugDisplay.cpp">
       <Filter>Component</Filter>
     </ClCompile>
-    <ClCompile Include="src\GameObject\Weapon\Weapon.cpp" />
     <ClCompile Include="src\Scene\TitleScene.cpp">
       <Filter>Scene</Filter>
     </ClCompile>
     <ClCompile Include="src\GameObject\Character\Enemy\Goblin\Goblin.cpp">
       <Filter>GameObject\Character\Enemy\Goblin</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GameObject\Weapon\Weapon.cpp">
+      <Filter>GameObject\Character\Weapon</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -1,5 +1,9 @@
 #pragma once
 #include "BaseScene.h"
+
+/// <summary>
+/// ゲームシーン
+/// </summary>
 class GameScene : public BaseScene
 {
 protected:
@@ -15,8 +19,14 @@ protected:
 	GameObject* pPlayer;
 
 public:
+	/// <summary>
+	/// コンストラクタ
+	/// </summary>
 	GameScene();
 
+	/// <summary>
+	/// デストラクタ
+	/// </summary>
 	~GameScene();
 
 public:
