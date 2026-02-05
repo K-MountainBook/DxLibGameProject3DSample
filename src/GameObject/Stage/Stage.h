@@ -1,34 +1,45 @@
 #pragma once
 #include "../GameObject.h"
-#include "../../Definition.h"
 #include <vector>
-
+/*
+* @brief ステージクラス
+* @tips ゲームオブジェクトクラスの派生
+*/
 class Stage : public GameObject
 {
-private:
-	int modelHandle;								// ステージのモデルハンドル
-	std::vector<GameObject*> onGroundObjectArray;	// 接地判定が必要なオブジェクト
-public:
+private:	// メンバ変数
+	int modelHandle;								// モデルハンドル
+	std::vector<GameObject*> onGroundObjectArray;	// 地面に接地するオブジェクト達
+
+public:		//　コンストラクタとデストラクタ
 	Stage();
 
 	~Stage();
 
-public:
+public:		// オーバーライドするメンバ関数
+
 	void Start() override;
+
 	void Update() override;
+
 	void Render() override;
 
-public:
-	// 接地オブジェクトとしてインスタンスに登録する。
+public:		// メンバ関数
+	/*
+	* @function Register
+	* @brief 接地オブジェクトとして登録
+	* @param[in]	GameObject* _pObj
+	*/
 	void Register(GameObject* _pObj);
 
 public:
-	/// <summary>
-	/// 地形のモデルハンドルを設定する
-	/// </summary>
-	/// <param name="_v">ハンドル</param>
-	inline void SetModelHandle(int& _v) {
-		modelHandle = _v;
-	}
-};
 
+	/*
+	* @function SetModelHandle
+	* @brief	モデルハンドルの設定
+	* @param[in]	int _v 初期化するモデルハンドル
+	*/
+	inline void SetModelHandle(int& _v) { modelHandle = _v; }
+
+
+};

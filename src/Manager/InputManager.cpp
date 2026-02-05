@@ -1,20 +1,33 @@
 #include "InputManager.h"
-#include "../GameObject/Camera/Camera.h"
+#include <DxLib.h>
 
+//静的メンバ変数の初期化
 InputManager* InputManager::pInstance = nullptr;
 
+/*
+* @brief コンストラクタ
+*/
 InputManager::InputManager()
-	: xinput()
-	, prevxinput()
-	, keyState()
+	: keyState()
 	, prevKeyState() {
-
 }
 
+
+/*
+* @function	CreateInstance
+* @brief	自身のインスタンスを生成する。
+* @return	InputManager*
+*/
 void InputManager::CreateInstance() {
 	pInstance = new InputManager();
 }
 
+
+/*
+* @function GetInstance
+* @brief	自身のインスタンスを取得する唯一の手段
+* @return	InputManager*	自身のインスタンスのアドレス
+*/
 InputManager* InputManager::GetInstance() {
 	if (pInstance == nullptr) {
 		CreateInstance();
@@ -25,29 +38,16 @@ InputManager* InputManager::GetInstance() {
 
 void InputManager::DestroyInstance() {
 	if (pInstance != nullptr) {
+
 		delete pInstance;
 		pInstance = nullptr;
 	}
 }
 
 void InputManager::Update() {
+	// 1フレーム前のキーの状態を保存
 	memcpy_s(prevKeyState, 256, keyState, 256);
-	prevxinput = xinput;
-	// キーボードの入力を更新
+	// 今のフレームのキーの状態を取得
 	GetHitKeyStateAll(keyState);
-	// Xinputコントローラの入力を更新
-	GetJoypadXInputState(DX_INPUT_PAD1, &xinput);
-}
 
-void InputManager::DebugRender() {
-
-	DrawFormatString(0, 20, red, L"LeftStickAxisX:%d", xinput.ThumbLX);
-	DrawFormatString(0, 40, red, L"LeftStickAxisY:%d", xinput.ThumbLY);
-	DrawFormatString(0, 60, red, L"RightStickAxisX:%d", xinput.ThumbRX);
-	DrawFormatString(0, 80, red, L"RihgtStickAxisY:%d", xinput.ThumbRY);
-	DrawFormatString(0, 100, red, L"LeftTrigger:%d", xinput.LeftTrigger);
-	DrawFormatString(0, 120, red, L"RightTrigger:%d", xinput.RightTrigger);
-
-#if _DEBUG
-#endif
 }

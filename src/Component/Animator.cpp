@@ -1,102 +1,107 @@
-
 #include "Animator.h"
 #include "../Definition.h"
 
-/// <summary>
-/// コンストラクタ
-/// </summary>
+/*
+* @brief	コンストラクタ
+*/
 Animator::Animator()
-	:animationModelHandle(INVALID)
+	: animationModelHandle(INVALID)
 	, pAnimations()
-	, currentAnimationHandle(INVALID)
-	, isPlaying(false)
-{
+	, currentAnimation(INVALID)
+	, isPlaying(false) {
 }
 
-/// <summary>
-/// デストラクタ
-/// </summary>
-Animator::~Animator()
-{
+
+/*
+* @brief	デストラクタ
+*/
+Animator::~Animator() {
+	// アニメーション群の解放
 	for (auto anim : pAnimations) {
 		delete anim;
 	}
 	pAnimations.shrink_to_fit();
 }
 
-/// <summary>
-/// 更新
-/// </summary>
-void Animator::Update()
-{
-	// 現在アニメーションが設定されていなければ処理を行わない
-	if (currentAnimationHandle == INVALID) {
+/*
+* @function	Update
+* @brief	更新処理
+*/
+void Animator::Update() {
+	// 無効なアニメーション番号だった場合処理しない
+	if (currentAnimation == INVALID) {
 		return;
 	}
 
-	// 現在再生中のアニメーションを読み込み済み配列から取得する
-	AnimationClip* pCurrentAnim = GetAnimation(currentAnimationHandle);
+	// 現在のアニメーションを取得する
+	AnimationClip* pCurrentAnim = GetAnimation(currentAnimation);
 
-	// 取得できなければ処理を行わない
+	// NULLチェック
 	if (pCurrentAnim == nullptr) {
 		return;
 	}
 
-	// 再生中のアニメーションに対して、再生時間を加算する。
+	// アニメーションを進める
 	pCurrentAnim->playTime += pCurrentAnim->playSpeed;
 
-	// 加算の結果再生総時間を超過した場合、0に戻す
+	// アニメの終了時間を超過したら
 	if (pCurrentAnim->playTime > pCurrentAnim->totalTime) {
+		// 再生フラグを折る
 		isPlaying = false;
+		// 再生時間をリセット
 		pCurrentAnim->playTime = 0.0f;
+		//再生していたアニメーションがループ再生するかどうか
 		if (pCurrentAnim->isLoop) {
+			// ループするアニメであった場合再生フラグを立てる
 			isPlaying = true;
 		}
 		else {
-			Play(pCurrentAnim->transtion);
+			//終了時のアニメーションを再生する
+			Play(pCurrentAnim->transition);
 		}
 	}
-	// 時間を進ませたアニメーションをモデルにセットする
-	MV1SetAttachAnimTime(animationModelHandle, 0, pCurrentAnim->playTime);
 
+	MV1SetAttachAnimTime(animationModelHandle, 0, pCurrentAnim->playTime);
 }
 
-/// <summary>
-/// アニメーションの読み込み
-/// </summary>
-/// <param name="_filePath">アニメーションのファイルパス</param>
-/// <param name="_isLoop">アニメーションのループ</param>
-/// <param name="_transition"></param>
-void Animator::Load(std::wstring _filePath, bool _isLoop, int _transition)
-{
+/*
+* @function	Load
+* @brief	アニメーションの読み込み
+* @param[in]	std::string	filePath		読み込むデータのパス
+* @param[in]	bool _isLoop = false		アニメーションをループ再生するかどうか
+* @param[in]	int	_transition = 0			終了後の番号
+*/
+void Animator::Load(std::string _filePath, bool _isLoop, int _transition) {
+	// アニメーションの動的確保 + 読み込み
 	AnimationClip* pAnimClip = new AnimationClip(MV1LoadModel(_filePath.c_str()), _isLoop, _transition);
+	// アニメーション群に追加
 	pAnimations.push_back(pAnimClip);
 }
 
-
-/// <summary>
-/// アニメーションの再生
-/// </summary>
-/// <param name="_index">読み込んだアニメーションの何番目か</param>
-/// <param name="_speed">再生速度（1が標準）</param>
-void Animator::Play(int _index, float _speed)
-{
-	// アニメーションが変更されていない場合は処理を行わない
-	if (_index == currentAnimationHandle) {
+/*
+* @function Play
+* @brief	アニメーションの再生
+* @param[in]	int _index
+* @param[in]	float _speed
+*/
+void Animator::Play(int _index, float _speed) {
+	if (_index == currentAnimation) {
 		return;
 	}
 
-	// 読み込んだ何番目のアニメーションかを保存
-	currentAnimationHandle = _index;
-	// 現在モデルに設定されているアニメーションを破棄
-	int result = MV1DetachAnim(animationModelHandle, 0);
-	// 現在モデルに設定されているアニメーションの情報の初期化
+	currentAnimation = _index;
+	// 再生中だったアニメーションのでタッチ
+	MV1DetachAnim(animationModelHandle, 0);
+	// 適用するアニメーションの再生時間の初期化
 	pAnimations[_index]->playTime = 0.0f;
+	// 適用するアニメーションの再生速度の初期化
 	pAnimations[_index]->playSpeed = _speed;
-	// pAnimations配列に格納されている読み込んだアニメーションをモデルに設定する。
+	// 適用するアニメーションをアタッチする。
 	int attachiIndex = MV1AttachAnim(animationModelHandle, 0, pAnimations[_index]->animationHandle, FALSE);
-	// 設定したアニメーションの再生総時間を取得する
+	// 適用したアニメーションの終了時間を初期化する
 	pAnimations[_index]->totalTime = MV1GetAttachAnimTotalTime(animationModelHandle, attachiIndex);
-	// アニメーション再生中フラグをＯＮにする。
+	// 再生中フラグを立てる
 	isPlaying = true;
+
+
 }

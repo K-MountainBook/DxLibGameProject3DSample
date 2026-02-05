@@ -1,49 +1,59 @@
 #include "Weapon.h"
+#include "../../Component/Collider.h"
+#include "../../Manager/EffectManager.h"
+#include "../../Manager/CollisionManager.h"
 
-/// <summary>
-/// コンストラクタ
-/// </summary>
-/// <param name="_tag"></param>
+/*
+* @brief コンストラクタ
+*/
 Weapon::Weapon(std::string _tag)
-	: GameObject(VZero, _tag)
+	:GameObject(VZero, _tag)
 	, modelHandle(INVALID)
-	, attachiModelHandle(INVALID)
-	, attachiFrameIndex(INVALID)
+	, attachModelHandle(INVALID)
+	, attachFrameIndex(INVALID)
 	, isAttacking(false)
 {
 }
 
-/// <summary>
-/// デストラクタ
-/// </summary>
+/*
+* @brief デストラクタ
+* @tips		継承して使うときは仮想関数にする。
+*/
 Weapon::~Weapon()
 {
 	MV1DeleteModel(modelHandle);
 }
 
-/// <summary>
-/// 初期化
-/// </summary>
+/**
+* @function		Start
+* @brief		初期化処理
+* @tips			純粋仮想関数で実装する
+*/
 void Weapon::Start()
 {
 }
 
-/// <summary>
-/// 更新
-/// </summary>
+/**
+* @function		Update
+* @brief		更新処理
+* @tips			純粋仮想関数で実装する
+*/
 void Weapon::Update()
 {
 	if (!isVisible) {
 		return;
 	}
-	
-	matrix = MV1GetFrameLocalWorldMatrix(attachiModelHandle, attachiFrameIndex);
+
+
+	matrix = MV1GetFrameLocalWorldMatrix(attachModelHandle, attachFrameIndex);
+
 	MV1SetMatrix(modelHandle, matrix);
 }
-
-/// <summary>
-/// 描画
-/// </summary>
+/**
+* @function		Render
+* @brief		描画処理
+* @tips			純粋仮想関数で実装する
+*/
 void Weapon::Render()
 {
 	if (!isVisible) {
@@ -51,22 +61,60 @@ void Weapon::Render()
 	}
 
 	MV1DrawModel(modelHandle);
+
+
+	if (pCollider != nullptr) {
+		pCollider->Render();
+	}
+	if (pCollider != nullptr) {
+		pCollider->Render();
+	}
+	if (pCollider != nullptr) {
+		pCollider->Render();
+	}
+
 }
 
-/// <summary>
-/// 武器を持たせる
-/// </summary>
-/// <param name="_attachiModel">持たせるモデルハンドル</param>
-/// <param name="_weaponModel">持たせる武器のハンドル</param>
-/// <param name="_frameName">持たせるモデルの持たせるポイント</param>
-void Weapon::Attach(int& _attachiModel, int& _weaponModel, std::wstring _frameName)
+/*
+	* @function	Attach
+	* @brief	武器を取り付ける、持たせる
+	* @param[in]	int&	_attachiModel	持たせるモデルハンドル
+	* @param[in]	int&	_weaponModel	武器のモデルハンドル
+	* @param[in]	std::string	_frameName	アタッチするフレーム名
+	*/
+void Weapon::Attach(int& _attachiModel, int& _weaponModel, std::string _frameName)
 {
-	attachiModelHandle = _attachiModel;
+
+	// 持たせるキャラクタのモデルハンドル
+	attachModelHandle = _attachiModel;
+	// 武器のモデルハンドル
 	modelHandle = _weaponModel;
 
-	attachiFrameIndex = MV1SearchFrame(attachiModelHandle, _frameName.c_str());
+	// キャラクタの持たせる場所のフレーム番号
+	attachFrameIndex = MV1SearchFrame(attachModelHandle, _frameName.c_str());
 
-	matrix = MV1GetFrameLocalWorldMatrix(attachiModelHandle, attachiFrameIndex);
+	matrix = MV1GetFrameLocalWorldMatrix(attachModelHandle, attachFrameIndex);
+
+	// wpMatrix = MV1GetFrameLocalWorldMatrix(attachModelHandle, attachFrameIndex);
 
 	MV1SetMatrix(modelHandle, matrix);
+}
+
+
+void Weapon::OnTriggerEnter(Collider* _pCol) {
+
+	if (_pCol->GetGameObject()->GetTag() == "Goblin") {
+		if (!getIsAttacking()) {
+			EffectManager::GetInstance()->Instantiate("Hit", VAdd(_pCol->GetGameObject()->GetPosition(), VScale(VUp, 100)));
+			setIsAttacking(false);
+		}
+	}
+}
+
+void Weapon::OnTriggerStay(Collider* _pCol)
+{
+}
+
+void Weapon::OnTriggerExit(Collider* _pCol)
+{
 }

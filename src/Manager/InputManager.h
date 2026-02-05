@@ -1,103 +1,106 @@
 #pragma once
-#ifndef UNIQUE_INPUTMANAGER
-#define UNIQUE_INPUTMANAGER
 
-#include <DxLib.h>
-#include "../Definition.h"
-/// <summary>
-/// 入力管理（シングルトン）
-/// </summary>
-class InputManager
-{
+/*
+ * @brief 入力管理クラス
+ * @tips 管理するクラスは1つであるべき -> シングルトンのデータ構造
+ */
+class InputManager {
+#pragma ragion シングルトンのデータ構造
 private:
 	static InputManager* pInstance;
 
-private:
+private:	// コンストラクタとデストラクタ
+	/*
+	* @brief コンストラクタ
+	* @tips  外部で生成されないようにアクセス修飾子をprivateにする。
+	*/
 	InputManager();
 
-	// 暗黙定義されるデフォルトの挙動をする、
+	/*
+	* @brief デストラクタ
+	*/
 	~InputManager() = default;
 
-public:
-	// シングルトンを厳密にするためインスタンス化の禁止
+public:		// コピーと譲渡の禁止
 	InputManager(const InputManager&) = delete;
 	InputManager(InputManager&&) = delete;
 
-	// オペレータオーバーライドで等号によるインスタンスのコピーも禁止
 	InputManager& operator = (const InputManager&) = delete;
 	InputManager& operator = (InputManager&&) = delete;
-private:
+
+private:	// 静的メンバ関数
+	/*
+	* @function	CreateInstance
+	* @brief	自身のインスタンスを生成する。
+	*/
 	static void CreateInstance();
 
-public:
+public:		// 静的メンバ関数
+	/*
+	* @function GetInstance
+	* @brief	自身のインスタンスを取得する唯一の手段
+	* @return	InputManager*	自身のインスタンスのアドレス
+	*/
 	static InputManager* GetInstance();
+
+	/*
+	* @function	DestroyInstance
+	* @brief	自身のインスタンスを破棄する
+	*/
 	static void DestroyInstance();
 
-private:
-	XINPUT_STATE xinput;
-	XINPUT_STATE prevxinput;
-	char keyState[256];
-	char prevKeyState[256];
 
-public:
+#pragma endregion
+
+
+private:	// メンバ変数
+	char keyState[256];			// 現在のキーの状態
+	char prevKeyState[256];		// 1フレーム前のキーの状態
+	
+public:		// メンバ関数
+	/*
+	* @function Update
+	* @brief	更新処理
+	*/
 	void Update();
 
-	void DebugRender();
-
-public:
+public:		// キーボード用入力管理
+	/*
+	* @function IsKeyDown
+	* @brief	キーが押されたかどうか
+	* @param[in] int _key	キー番号
+	* @return	bool
+	* @tips		押されていない状態 -> 押された状態
+	*/
 	inline bool IsKeyDown(int _key) const {
+		// !前 && 今
 		return !prevKeyState[_key] && keyState[_key];
 	}
 
+	/*
+	* @function IsKey
+	* @brief	キーが押しているかどうか
+	* @param[in] int _key	キー番号
+	* @return	bool
+	* @tips		押している状態
+	*/
 	inline bool IsKey(int _key) const {
+		// 今
 		return keyState[_key];
 	}
 
+
+	/*
+	* @function IsKeyDown
+	* @brief	キーが押されたかどうか
+	* @param[in] int _key	キー番号
+	* @return	bool
+	* @tips		押された -> 押されていない状態
+	*/
 	inline bool IsKeyUp(int _key) const {
+		// 前 && !今
 		return prevKeyState[_key] && !keyState[_key];
-	}
-
-	inline bool IsButtonDown(int _key) const {
-		return !prevxinput.Buttons[_key] && xinput.Buttons[_key];
-	}
-
-	inline bool IsButton(int _key) const {
-		return xinput.Buttons[_key];
-	}
-
-	inline bool IsButtonUp(int _key) const {
-		return prevxinput.Buttons[_key] && !xinput.Buttons[_key];
-	}
-
-	void GetLRStick(short* xLAxis, short* yLAxis, short* xRAxis, short* yRAxis) {
-		*xLAxis = xinput.ThumbLX;
-		*yLAxis = xinput.ThumbLY;
-		*xRAxis = xinput.ThumbRX;
-		*yRAxis = xinput.ThumbRY;
-
-	}
-
-	void GetLeftStick(short* xAxis, short* yAxis) const {
-		*xAxis = xinput.ThumbLX;
-		*yAxis = xinput.ThumbLY;
-	}
-	void GetRightStick(short* xAxis, short* yAxis) const {
-		*xAxis = xinput.ThumbRX;
-		*yAxis = xinput.ThumbRY;
-	}
-
-	void GetLeftTrigger(unsigned char* pPressure)  const {
-		*pPressure = xinput.LeftTrigger;
-	}
-
-	void GetRightTrigger(unsigned char* pPressure)  const {
-		*pPressure = xinput.RightTrigger;
-	}
-
-	XINPUT_STATE GetXinput() {
-		return xinput;
 	}
 
 };
 
-#endif // UNIQUE_INPUTMANAGER

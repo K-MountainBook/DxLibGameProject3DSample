@@ -1,33 +1,42 @@
 #include "SceneManager.h"
 #include "../Scene/GameScene.h"
 #include "../Scene/TitleScene.h"
+#include "FadeManager.h"
 
+/*
+ * @brief 入力管理クラス
+ * @tips 管理するクラスは1つであるべき -> シングルトンのデータ構造
+ */
 
 SceneManager* SceneManager::pInstance = nullptr;
 
-/// <summary>
-/// コンストラクタ（初めのシーンを設定する）
-/// </summary>
 SceneManager::SceneManager()
-    :pCurrentScene(nullptr)
+	:pCurrentScene(nullptr)
 	, next(SceneType::Title)
 	, current((SceneType)INVALID)
 {
-	LoadScene();
+	// 遷移先のシーンを生成する
+	switch (next)
+	{
+	case SceneType::Title:
+		pCurrentScene = new TitleScene();
+		break;
+	case SceneType::Game:
+		pCurrentScene = new GameScene();
+		break;
+	default:
+		pCurrentScene = nullptr;
+		break;
+	}
+
+	current = next;
 }
 
-/// <summary>
-/// インスタンスの作成
-/// </summary>
 void SceneManager::CreateInstance()
 {
 	pInstance = new SceneManager();
 }
 
-/// <summary>
-/// インスタンスの取得
-/// </summary>
-/// <returns></returns>
 SceneManager* SceneManager::GetInstance()
 {
 	if (pInstance == nullptr) {
@@ -37,64 +46,48 @@ SceneManager* SceneManager::GetInstance()
 	return pInstance;
 }
 
-/// <summary>
-/// インスタンスの破棄
-/// </summary>
 void SceneManager::DestroyInstance()
 {
 }
 
-/// <summary>
-/// 次のシーンを設定する
-/// </summary>
-/// <param name="_next">SceneType</param>
-void SceneManager::SetNext(SceneType _next)
+void SceneManager::Update()
 {
-	next = _next;
-}
 
-/// <summary>
-/// シーンの状態をUpdate
-/// また、次のシーンが設定されていればシーン遷移と読み込みを行う
-/// </summary>
-void SceneManager::Update() {
+	// シーンが無ければ更新しない
 	if (pCurrentScene == nullptr) {
 		return;
 	}
-	
+	// 現在のシーンを更新する
 	pCurrentScene->Update();
 
-	// 場面の遷移が無ければ更新しない
+	// シーンの切り替えがあれば遷移を行う
 	if (current != next) {
 		LoadScene();
 	}
-
 }
 
-/// <summary>
-/// シーンのレンダリング
-/// </summary>
-void SceneManager::Render() {
+void SceneManager::Render()
+{
 
+	// シーンが無ければ更新しない
 	if (pCurrentScene == nullptr) {
 		return;
 	}
-
+	// 現在のシーンを更新する
 	pCurrentScene->Render();
+
 }
 
-/// <summary>
-/// シーンの読み込み
-/// </summary>
 void SceneManager::LoadScene()
 {
-
+	// 現在のシーン番号を書き換える
 	current = next;
 
-	delete pCurrentScene;
 
+	delete pCurrentScene;
 	pCurrentScene = nullptr;
 
+	// 次のシーンを生成する
 	switch (next)
 	{
 	case SceneType::Title:
@@ -103,15 +96,13 @@ void SceneManager::LoadScene()
 	case SceneType::Game:
 		pCurrentScene = new GameScene();
 		break;
-	case SceneType::Clear:
-		pCurrentScene = nullptr;
-		break;
-	case SceneType::GameOver:
-		pCurrentScene = nullptr;
-		break;
 	default:
 		pCurrentScene = nullptr;
 		break;
 	}
+}
 
+void SceneManager::SetNext(SceneType _next)
+{
+	next = _next;
 }

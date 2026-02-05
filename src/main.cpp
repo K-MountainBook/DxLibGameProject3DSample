@@ -1,83 +1,274 @@
-ï»¿#include <iostream>
+// include•”
 #include <DxLib.h>
+#include <vector>
+#include <random>
+#include <EffekseerForDXLib.h>
+
 #include "Definition.h"
-#include "Manager/SceneManager.h"
 #include "Manager/InputManager.h"
-#include "Component/DebugDisplay.h"
+#include "Manager/TimeManager.h"
 
-// ãƒ—ãƒ­ã‚°ãƒ©ãƒ ã¯ WinMain ã‹ã‚‰å§‹ã¾ã‚Šã¾ã™
-int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPSTR lpCmdLine, _In_ int nCmdShow)
-{
-	// int key;
-	// ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®ä½ç½®
-	VECTOR pos = VGet(0.0f, 280.0f, -400.0f);
-	// ã‚«ãƒ¡ãƒ©ãƒã‚¸ã‚·ãƒ§ãƒ³
-	VECTOR cpos = VGet(0.0f, 180.0f, -400.0f);
-	// æ³¨è¦–ç‚¹
-	VECTOR ctgt = VGet(0.0f, 0.0f, 400.0f);
-	bool running = false;
+#include "Manager/SceneManager.h"
+#include "Manager/FadeManager.h"
 
-	SetGraphMode(WINDOW_WIDTH_HD, WINDOW_HEIGHT_HD, 32, FPS_60);
-	ChangeWindowMode(TRUE);
+#include "Manager/EffectManager.h"
+#include "Manager/AudioManager.h"
 
-	if (DxLib_Init() == -1)		// ï¼¤ï¼¸ãƒ©ã‚¤ãƒ–ãƒ©ãƒªåˆæœŸåŒ–å‡¦ç†
-	{
-		return -1;			// ã‚¨ãƒ©ãƒ¼ãŒèµ·ããŸã‚‰ç›´ã¡ã«çµ‚äº†
+#include "Manager/CollisionManager.h"
+
+/*
+* @brief		WindowsƒvƒƒOƒ‰ƒ€‚ÌƒGƒ“ƒgƒŠ[ƒ|ƒCƒ“ƒg
+* @param[in]	HINSTANCE
+* @param[in]	HINSTANCE
+* @param[in]	LPSTR
+* @param[in]	int
+* @return		int
+* @tips			WinAPI
+*/
+int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
+	//==========================================================
+	// DxLib‚Ì‰Šú‰»ˆ—@—‰ğ‚·‚é‚Ü‚Å‚ÍG‚ç‚È‚¢
+	//==========================================================
+	SetMainWindowText("Test");
+	SetOutApplicationLogValidFlag(false);
+	// ƒEƒBƒ“ƒhƒEƒTƒCƒY‚ğ•ÏX‚·‚éB
+	SetGraphMode(WINDOW_WIDTH, WINDOW_HEIGHT, 32, FPS);
+	// ‹N“®‚ÌƒEƒBƒ“ƒhƒE‚Ìƒ‚[ƒh‚Ìİ’è
+	ChangeWindowMode(TRUE);		// true ƒEƒBƒ“ƒhƒEƒ‚[ƒh
+	// ”wŒiF‚Ìİ’è
+	SetBackgroundColor(192, 192, 192);
+
+	// DirectX‚ğg—p‚µ‚Ü‚·
+	// effekseer©‘Ì‚ªDirectX‚ğg—p‚µ‚Ä‚¢‚é‚½‚ß•K‚¸•K—v -> DirectX9 or 11
+	SetUseDirect3DVersion(DX_DIRECT3D_11);
+
+	// DxLib‚Ì‰Šú‰»
+	if (DxLib_Init() == -1) {
+		return -0;
 	}
 
-	// ãƒ•ãƒ¬ãƒ¼ãƒ ãƒ¬ãƒ¼ãƒˆèª¿æ•´ç”¨ã‚«ã‚¦ãƒ³ã‚¿ï¼ˆãƒŸãƒªç§’
-	LONGLONG frameRateAdjCounter = 0;
-	LONGLONG prevFrameTime = 0;
-	float fps = 0.0f;
+	// Effekseer‚Ì‰Šú‰»
+	// Effekseer_Init() ˆø”:Å‘å‚Ìƒp[ƒeƒBƒNƒ‹—Ê
+	if (Effekseer_Init(8000) == -1) {
+		DxLib_End();
+		return 0;
+	}
 
-	// æ›¸ãè¾¼ã¿å…ˆã‚’ãƒãƒƒã‚¯ãƒãƒƒãƒ•ã‚¡ã«è¨­å®š
+	// •`‰æ‚·‚éæ‚ğİ’è‚·‚é@— ‰æ–Ê‚É•ÏX
 	SetDrawScreen(DX_SCREEN_BACK);
 
-	// ã‚«ãƒ¡ãƒ©ã®è¨­å®š
-	SetCameraPositionAndTargetAndUpVec(cpos, ctgt, VGet(0.0f, 1.0f, 0.0f));
 
-	// ãƒ‡ãƒãƒƒã‚°ã«ã‚¤ãƒ³ãƒ—ãƒƒãƒˆãƒãƒãƒ¼ã‚¸ãƒ£ãƒ¼ã¨ã‚·ãƒ¼ãƒ³ãƒãƒãƒ¼ã‚¸ãƒ£ãƒ¼ã‚’ã‚»ãƒƒãƒˆ
-	DebugDisplay::GetInstance()->SetInputManager(InputManager::GetInstance());
-	DebugDisplay::GetInstance()->SetSceneManager(SceneManager::GetInstance());
-
-	// ãƒ¡ã‚¤ãƒ³ãƒ«ãƒ¼ãƒ—
-	while (ProcessMessage() == 0 && CheckHitKey(KEY_INPUT_ESCAPE) == 0) {
-
-		// ãƒ¡ã‚¤ãƒ³ãƒ«ãƒ¼ãƒ—ã®é–‹å§‹æ™‚é–“ã‚’å–å¾—ã™ã‚‹
-		frameRateAdjCounter = GetNowHiPerformanceCount();
-
-		// update
-		InputManager::GetInstance()->Update();
-		SceneManager::GetInstance()->Update();
-
-		ClearDrawScreen();
-
-		SceneManager::GetInstance()->Render();
-
-#if _DEBUG
-		DebugDisplay::GetInstance()->Render();
-#endif
-
-		// å‰ãƒ•ãƒ¬ãƒ¼ãƒ ã‹ã‚‰ã®çµŒéæ™‚é–“ã‚’å–å¾—ã™ã‚‹
-		LONGLONG deltaTime = (frameRateAdjCounter - prevFrameTime);
-
-		DrawFormatString(0, 700, red, L"FPS:%.2f", ((float)1.0f / (float)deltaTime) * 1000000.0f);
-
-		// ã‚¹ã‚¯ãƒªãƒ¼ãƒ³ãƒãƒƒãƒ•ã‚¡ã®å…¥ã‚Œæ›¿ãˆ
-		ScreenFlip();
-
-		// ãƒ•ãƒ¬ãƒ¼ãƒ ãƒ¬ãƒ¼ãƒˆèª¿æ•´
-		while (true) {
-			if (GetNowHiPerformanceCount() - frameRateAdjCounter >= 1000.0f * 1000.0f / FPS_60) {
-				break;
-			}
-		}
-
-		// ãƒ¡ã‚¤ãƒ³ãƒ«ãƒ¼ãƒ—ã®é–‹å§‹æ™‚é–“ã‚’é€€é¿
-		prevFrameTime = frameRateAdjCounter;
+	// Effekseer‚ğg‚¤ã‚ÅZƒoƒbƒtƒ@‚Í•K{
+	// }Œ`•`‰æ‚ÌZƒoƒbƒtƒ@‚Ì—LŒø‰»
+	{
+		// Zƒoƒbƒtƒ@‚ğg—p‚·‚é‚©H
+		SetUseZBuffer3D(TRUE);
+		// Zƒoƒbƒtƒ@‚É‘‚«‚İ‚ğs‚¤‚©
+		SetWriteZBuffer3D(TRUE);
 	}
 
-	DxLib_End();				// ï¼¤ï¼¸ãƒ©ã‚¤ãƒ–ãƒ©ãƒªä½¿ç”¨ã®çµ‚äº†å‡¦ç†
+	// ƒ‰ƒCƒfƒBƒ“ƒO
+	{
+		// ƒ‰ƒCƒg‚ÌŒvZ‚ğ‚·‚é‚©‚Ç‚¤‚©H
+		SetUseLighting(TRUE);
+		// •W€ƒ‰ƒCƒg‚ğg—p‚·‚é‚©H
+		SetLightEnable(TRUE);
+		// ƒOƒ[ƒoƒ‹ŠÂ‹«Œõ
+		SetGlobalAmbientLight(GetColorF(1.0f, 1.0f, 1.0f, 1.0f));
 
-	return 0;				// ã‚½ãƒ•ãƒˆã®çµ‚äº† 
+		//// ŠgUŒõ diffuse
+		//SetLightDifColor(GetColorF(0.25f, 0.25f, 0.25f, 1.0f));
+		//// •\–Ê”½ËŒõ‚Ìİ’è specular
+		//SetLightSpcColor(GetColorF(0.25f, 1.0f, 0.25f, 1.0f));
+		//// ŠÂ‹«Œõ Ambient
+		//SetLightAmbColor(GetColorF(1.0f, 1.0f, 1.0f, 1.0f));
+	}
+	//==========================================================
+	// ƒQ[ƒ€‚Ì‰Šú‰»ˆ—
+	//==========================================================
+
+	std::random_device rd;
+	std::mt19937_64 mt(rd());
+	SRand(mt());
+
+	// ƒV[ƒ“‚ÌƒCƒ“ƒXƒ^ƒ“ƒX‰»
+	// BaseScene* pGameScene = new GameScene();			ƒ}ƒl[ƒWƒƒ‚ğg‚¤
+
+
+	// ‹…‚ÌˆÊ’u
+	VECTOR spherePosition = VZero;
+	// ƒJƒƒ‰‚ÌƒIƒCƒ‰[Šp
+	VECTOR cameraEulerAngle = VZero;
+	// ˆÚ“®‘¬“x
+	float moveSpeed = 10.0f;
+
+
+	//==========================================================
+	// ƒQ[ƒ€‚ÌƒƒCƒ“ƒ‹[ƒv
+	//==========================================================
+	while (1) {
+		if (ProcessMessage() == -1) {
+
+		}
+
+		// DxLib‚ÌƒJƒƒ‰‚ÆEffekseer‚ÌƒJƒƒ‰‚ğ“¯Šú‚·‚é
+		Effekseer_Sync3DSetting();
+
+		//==========================================================
+		// ‰e‚ğ•\¦‚·‚éƒIƒuƒWƒFƒNƒg‚Ì•`‰æ
+		//==========================================================
+
+		// ƒVƒƒƒhƒEƒ}ƒbƒv‚Ö‚Ì•`‰æI—¹
+		// ShadowMap_DrawEnd();
+
+		//==========================================================
+		// ƒQ[ƒ€‚ÌXVˆ—‚ÌXVˆ—
+		//==========================================================
+		InputManager::GetInstance()->Update();
+		TimeManager::GetInstance()->Update();
+		FadeManager::GetInstance()->Update();
+		EffectManager::GetInstance()->Update();
+		AudioManager::GetInstance()->Update();
+
+		if (FadeManager::GetInstance()->GetFadeState() == FadeState::FadeEnd) {
+			SceneManager::GetInstance()->Update();
+			CollisionManager::GetInstance()->Update();
+		}
+
+#if _DEBUG
+		//ESCƒL[‚ÅƒEƒBƒ“ƒhƒE‚ğ•Â‚¶‚é
+		if (InputManager::GetInstance()->IsKeyDown(KEY_INPUT_ESCAPE)) {
+			break;
+		}
+#endif
+		// ‰æ–Ê‚ğƒNƒŠƒA‚·‚é
+		ClearDrawScreen();
+
+
+		//==========================================================
+		// ƒQ[ƒ€‚Ì•`‰æˆ—iˆ—‡‚É’ˆÓj
+		//==========================================
+
+#if _DEBUG
+		{
+			VECTOR pos1, pos2;
+			//xz•½–Ê‚É100F–ˆ‚É—ˆø‚«
+			{
+				// ‰¡ü
+				pos1 = VGet(-5000.0f, 0.0f, -5000.0f);
+				pos2 = VGet(-5000.0f, 0.0f, 5000.0f);
+
+				for (int i = 0; i <= 100; i++) {
+					DrawLine3D(pos1, pos2, gray);
+					pos1.x += 100.0f;
+					pos2.x += 100.0f;
+				}
+
+				//‰œs‚Ìü
+				pos1 = VGet(-5000.0f, 0.0f, -5000.0f);
+				pos2 = VGet(5000.0f, 0.0f, -5000.0f);
+				for (int i = 0; i <= 100; i++) {
+					DrawLine3D(pos1, pos2, gray);
+					pos1.z += 100.0f;
+					pos2.z += 100.0f;
+				}
+			}
+			{
+				pos1 = VZero;
+				pos2 = VScale(VRight, 5000);
+				DrawLine3D(pos1, pos2, red);
+			}
+			{
+				pos1 = VZero;
+				pos2 = VScale(VUp, 5000);
+				DrawLine3D(pos1, pos2, green);
+			}
+			{
+				pos1 = VZero;
+				pos2 = VScale(VForward, 5000);
+				DrawLine3D(pos1, pos2, blue);
+			}
+		}
+#endif
+
+		//// ƒ}ƒeƒŠƒAƒ‹‚Ìİ’èi¿Š´j
+		//MATERIALPARAM mat;
+		//mat.Diffuse = GetColorF(0.0f, 0.0f, 1.0f, 1.0f);
+		//mat.Specular = GetColorF(0.25f, 0.25f, 0.25f, 0.0f);
+		//mat.Ambient = GetColorF(0.0f, 1.0f, 0.0f, 1.0f);
+		//mat.Emissive = GetColorF(0.1f, 0.0f, 0.0f, 1.0f);
+		//mat.Power = 100;
+
+		// ƒ‰ƒCƒg‚ÌŒvZ = ƒ‰ƒCƒg‚ÌŠgUŒõ * ƒ}ƒeƒŠƒAƒ‹‚ÌŠgUŒõ
+		// ƒ‰ƒCƒg‚ÌŒvZ = ƒ‰ƒCƒg‚Ì‹¾–Ê”½ËŒõ * ƒ}ƒeƒŠƒAƒ‹‚Ì‹¾–Ê”½ËŒõ
+		// ƒ‰ƒCƒg‚ÌŒvZ = ƒ‰ƒCƒg‚ÌŠÂ‹«Œõ * ƒ}ƒeƒŠƒAƒ‹‚ÌŠÂ‹«Œõ
+
+		//SetMaterialParam(mat);
+
+		// ƒ‚ƒfƒ‹‚Ì•`‰æ
+		// MV1DrawModel(model);
+		// ƒvƒŒƒCƒ„[‚Ì•`‰æ
+		//pPlayer->Render();
+		//pCamera->Render();
+
+		// •`‰æ‚Ég—p‚·‚éƒVƒƒƒhƒEƒ}ƒbƒv‚ğİ’è
+		//SetUseShadowMap(0, shadowMapHandle);
+
+		// ƒXƒe[ƒW‚Ì•`‰æ
+		// MV1DrawModel(stageHandle);
+
+		// ƒLƒƒƒ‰ƒNƒ^[‚Ì•`Ê
+		//for (auto pGameObject : pGameObjectArray) {
+		//	pGameObject->Render();
+		//}
+
+
+		// í‚É•`‰æ‚·‚é
+		SceneManager::GetInstance()->Render();
+		FadeManager::GetInstance()->Render();
+		EffectManager::GetInstance()->Render();
+		CollisionManager::GetInstance()->Render();
+
+		// ƒtƒF[ƒhˆ—‚ªI—¹‚µ‚Ä‚©‚çXV‚ğs‚¤
+		if (FadeManager::GetInstance()->GetFadeState() == FadeState::FadeEnd) {
+			CollisionManager::GetInstance()->Render();
+		}
+		TimeManager::GetInstance()->Render();
+
+
+		// ƒVƒƒƒhƒEƒ}ƒbƒv‚Ìİ’è‚ğ‰ğ•ú
+		//SetUseShadowMap(0, -1);
+
+		// — ‰æ–Ê‚Æ•\‰æ–Ê‚ğØ‚è‘Ö‚¦‚é
+		ScreenFlip();
+
+		// 60fps‚É‡‚í‚¹‚é‚½‚ß‚Ì‹óƒ‹[ƒv
+		while (1) {
+			if (GetNowCount() - TimeManager::GetInstance()->GetCurrent() >= 1000.0f / FPS) {
+				break;
+			}
+
+		}
+
+	}
+
+	// ƒVƒ“ƒOƒ‹ƒgƒ“‚ÌƒCƒ“ƒXƒ^ƒ“ƒX‚ğ”jŠü
+	SceneManager::DestroyInstance();	// Effect, Collision‚ÍScene‚Æ“¯‚É”jŠü‚³‚ê‚é‚Ì‚Å‹Lq‚Ì•K—v‚È‚µ
+	InputManager::DestroyInstance();
+	TimeManager::DestroyInstance();
+	FadeManager::DestroyInstance();
+	AudioManager::DestroyInstance();
+
+	// delete pGameScene;
+
+	//==========================================================
+	// DxLib‚Ì‰ğ•úˆ—
+	//==========================================================
+
+	// effecseer‚ÌI—¹
+	Effkseer_End();
+	// dxlib‚ÌI—¹
+	DxLib_End();
+
+	return 0;
 }

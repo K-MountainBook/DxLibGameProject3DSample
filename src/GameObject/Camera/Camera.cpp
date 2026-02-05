@@ -1,138 +1,150 @@
 #include "Camera.h"
 #include "../../Manager/InputManager.h"
-#include "../../Definition.h"
-#include "../../Component/DebugDisplay.h"
+#include "../../Manager/TimeManager.h"
 
+// 静的メンバ宣言
 Camera* Camera::main = nullptr;
 
-/// <summary>
-/// コンストラクタ
-/// </summary>
-/// <param name="_pos">カメラの座標</param>
-/// <param name="_length">カメラの距離</param>
-Camera::Camera(VECTOR _pos, float _length)
-	:GameObject(_pos)
-	, pTarget(nullptr)
-	, armLength(_length)
-	, offset(VScale(VUp, 100))
+Camera::Camera(VECTOR _pos, float _length) :
+	GameObject(_pos),
+	pTarget(nullptr),
+	armLength(_length)
+	, offset(VScale(VUp, 300))
 	, shakeOffset(VZero)
 	, timer(0)
 	, shakeTime(0)
-	, isShaking(false)
-	, LStickX()
-	, LStickY()
-	, RStickX()
-	, RStickY()
-	, LTrigger()
-	, RTrigger()
-{
+	, isShaking(false) {
 	Start();
 
+	// カメラを複数インスタンス化しないのでここで初期化
 	main = this;
+
 }
-/// <summary>
-/// デストラクタ
-/// </summary>
-Camera::~Camera()
-{
+
+Camera::~Camera() {
+
 }
-/// <summary>
-/// 初期処理
-/// </summary>
-void Camera::Start()
-{
+
+void Camera::Start() {
+
 }
-/// <summary>
-/// 更新
-/// </summary>
-void Camera::Update()
-{
-	// inputManagerの情報を読みだすための強引な呼び出し
-	// 本来はPlayerクラスで呼び出す
+
+void Camera::Update() {
+
+	// 入力管理クラスの取得
 	InputManager* input = InputManager::GetInstance();
 
 	VECTOR inputVec = VZero;
 
-	//input->GetLeftStick(&LStickX, &LStickY);
-	//input->GetRightStick(&RStickX, &RStickY);
-	input->GetLRStick(&LStickX, &LStickY, &RStickX, &RStickY);
-	input->GetLeftTrigger(&LTrigger);
-	input->GetRightTrigger(&RTrigger);
-
-	if (RStickY > SHRT_MAX / 2 || input->IsKey(KEY_INPUT_UP)) {
+	// cameraEulerAngle の操作
+	if (input->IsKey(KEY_INPUT_UP)) {
 		inputVec = VAdd(inputVec, VUp);
 	}
-	if (RStickX > SHRT_MAX / 2 || input->IsKey(KEY_INPUT_RIGHT)) {
-		inputVec = VAdd(inputVec, VRight);
-	}
-	if (RStickX < SHRT_MIN / 2 || input->IsKey(KEY_INPUT_LEFT)) {
+	if (input->IsKey(KEY_INPUT_LEFT)) {
 		inputVec = VAdd(inputVec, VLeft);
 	}
-	if (RStickY < SHRT_MIN / 2 || input->IsKey(KEY_INPUT_DOWN)) {
+	if (input->IsKey(KEY_INPUT_RIGHT)) {
+		inputVec = VAdd(inputVec, VRight);
+
+	}
+	if (input->IsKey(KEY_INPUT_DOWN)) {
 		inputVec = VAdd(inputVec, VDown);
+
 	}
 
-	// この書き方だと1フレーム毎に1度(VUp等の値)Degree角が変化する。
-	// Y方向に成す角φ
-	// →対象を中心にカメラが移動するため、横入力だと上下の回転はせずY座標を中心に回転する
-	// 逆時計回り（マイナス方向）
+	if (VSquareSize(inputVec) >= 0.01f) {
+		inputVec = VNorm(inputVec);
+	}
+
 	rotation.y += -inputVec.x;
-	// XZ平面上の成す角θ
-	// →対象を中心にカメラが移動するため、縦入力だと左右の回転はせずX座標を中心に回転する。
-	// とりあえずキーの方向にカメラが動くようにするためプラス方向へ回す
 	rotation.x += inputVec.y;
 
-	// オーバーフロー防止
-	if (rotation.x <= -360 || rotation.x >= 360) {
-		rotation.x = 0;
-	}
-	if (rotation.y <= -360 || rotation.y >= 360) {
-		rotation.y = 0;
-	}
+	// 原点中心の半径1の球面上の点
+	// XZ平面上の成す角をθ、y方面に成す角をφとすると
+	// (sinφ * cosθ　,sinφ　*　sinθ　,　cosφ)
+	// Z軸とY軸の座標系が異なっているため入れ替え
+	// (sinφ * cosθ　, cosφ , sinφ　*　sinθ　)
+	// 座標系が更に違う。右手座標系、左手座標系
 
-	// カメラの角度に合わせて、対象を中心とした球状にカメラを移動させる
-	// 半径を1、中心を(0,0,0)とした位置を算出する
+	// 中心点が原点で半径1の球面上の点
+	// 機能はしてない
 	VECTOR sphere = VGet(
-		-cosf(Deg2Rad(rotation.x)) * sinf(Deg2Rad(rotation.y)),		
-		sinf(Deg2Rad(rotation.x)),									// 2025/07/07 ここがcosfになってただけでした
-		-cosf(Deg2Rad(rotation.x)) * cosf(Deg2Rad(rotation.y))		
+		sinf(Deg2Rad(rotation.x)) * sinf(Deg2Rad(rotation.y)),
+		cosf(Deg2Rad(rotation.x)),
+		sinf(Deg2Rad(rotation.x)) * cosf(Deg2Rad(rotation.y))
 	);
 
-	// 半径を定数倍して距離を合わせる
+
+	// 座標系や回転、三角関数の相互の関係を組み込んだ最終形態
+	sphere = VGet(
+		-cosf(Deg2Rad(rotation.x)) * sinf(Deg2Rad(rotation.y)),
+		sinf(Deg2Rad(rotation.x)),
+		-cosf(Deg2Rad(rotation.x)) * cosf(Deg2Rad(rotation.y))
+	);
+
+	// 半径をarmLength倍する。
 	sphere = VScale(sphere, armLength);
-	// カメラターゲットのポジションを足しこんで位置を調整する
+	// 中心点を追従対象の座標分平行移動
 	sphere = VAdd(sphere, pTarget->GetPosition());
-	// カメラのポジションを決定する。
+
 	position = sphere;
-	
-	// 親クラスの更新
+	if (isShaking) {
+		timer += TimeManager::GetInstance()->GetDeltaTime();
+
+		position = VAdd(position, VScale(shakePattern, sinf(timer * FPS)));
+
+		if (timer >= shakeTime) {
+			isShaking = false;
+			timer = 0.0f;
+		}
+	}
+
 	GameObject::Update();
 
-	// カメラの位置と回転の設定を行う
-	SetCameraPositionAndAngle(
-		VAdd(position, offset), Deg2Rad(rotation.x), Deg2Rad(rotation.y), Deg2Rad(rotation.z)
-	);
+	// カメラの位置と回転を設定する
+	SetCameraPositionAndAngle(VAdd(position, offset), Deg2Rad(rotation.x), Deg2Rad(rotation.y), Deg2Rad(rotation.z));
 
-	DebugDisplay* temp = DebugDisplay::GetInstance();
-
-	temp->SetCameraInfo(this);
-}
-
-/// <summary>
-/// 描画
-/// </summary>
-void Camera::Render()
-{
-	// SetCameraPositionAndTarget_UpVecY(position, pTarget->GetPosition());
+	// リスナーの設定を行う
+	Set3DSoundListenerPosAndFrontPos_UpVecY(position, VAdd(position, forward));
 
 }
 
-/// <summary>
-/// カメラの揺れ（未実装）
-/// </summary>
-/// <param name="_direction"></param>
-/// <param name="_time"></param>
-/// <param name="_power"></param>
+void Camera::Render() {
+#if _DEBUG
+	DrawFormatString(0, 0, red, "Camera.position : %.2f, %.2f, %.2f,", position.x, position.y, position.z);
+	DrawFormatString(0, 20, red, "Camera.rotation : %.2f, %.2f, %.2f,", rotation.x, rotation.y, rotation.z);
+#endif
+}
+
 void Camera::Shake(int _direction, float _time, float _power)
 {
+	// 既に揺れていた場合は揺らさない
+	//if (!isShaking) {
+	//	return;
+	//}
+
+	// 各種必要な変数を初期化する
+	timer = 0.0f;
+	shakeTime = _time;
+	isShaking = true;
+	shakeOffset = VGet(GetRand(200 - 100), GetRand(200 - 100), GetRand(200 - 100));
+
+	// 揺らす方向に応じてパターンを変更する
+	switch (_direction) {
+	case 0:
+		shakePattern = VGet(shakeOffset.x, 0.0f, 0.0f);
+		break;
+	case 1:
+		shakePattern = VGet(0.0f, shakeOffset.y, 0.0f);
+		break;
+	case 2:
+		shakePattern = VGet(shakeOffset.x, shakeOffset.y, 0.0f);
+		break;
+	default:
+		shakePattern = shakeOffset;
+		break;
+	}
+
+	shakePattern = VScale(shakePattern, _power);
+
 }

@@ -1,10 +1,10 @@
 #include "Stage.h"
+#include "../../Definition.h"
 
 Stage::Stage()
-	:GameObject(VZero,"Stage")
+	:GameObject(VZero, "Stage")
 	, modelHandle(INVALID)
-	, onGroundObjectArray()
-{
+	, onGroundObjectArray() {
 	Start();
 }
 
@@ -19,44 +19,68 @@ void Stage::Start()
 
 void Stage::Update()
 {
-	// トライアングルリストとはなんぞや
-	// →モデルビューアで確認できるメッシュの塊（テクスチャが同じメッシュ？）
+	// レイキャスト->任意の位置から光線を飛ばし、当たったものやポリゴンがあるかどうか調べる
+	// モデルに存在するtriangleリスト
 	for (int i = 0; i < MV1GetTriangleListNum(modelHandle); i++) {
+		// トライアングルリストのポリゴン数繰り返す
 		for (int j = 0; j < MV1GetTriangleListPolygonNum(modelHandle, i); j++) {
 			VECTOR vertexs[3] = {};
 			MV1GetTriangleListPolygonVertexPosition(modelHandle, i, j, vertexs);
 
-			// positionに頂点座標を足したものを作る
+			// 位置の変更は対応済み
 			vertexs[0] = VAdd(position, vertexs[0]);
 			vertexs[1] = VAdd(position, vertexs[1]);
 			vertexs[2] = VAdd(position, vertexs[2]);
+			// 回転や拡縮の変更に対してはレイキャスト未対応
 
-			// 登録された接地オブジェクト
-			for(auto pObj:onGroundObjectArray){
-			// 接地判定
-				VECTOR rayOrigin = VAdd(pObj->GetPosition(), VScale(VUp, 120));
-				VECTOR rayEnd = VAdd(pObj->GetPosition(), VScale(VDown, 150));
-				// rayOrigin→rayEndの線がvertexsの3点が形成する三角にHITするかの確認
-				auto hit = HitCheck_Line_Triangle(
-					rayOrigin, rayEnd,
-					vertexs[0], vertexs[1], vertexs[2]);
 
-				// HitFlagがtrueであった場合登録された接地オブジェクトのy軸を
-				// hitした位置（接地位置）の値に入れ替える
-				if (hit.HitFlag) {
-					pObj->SetPosition(pObj->GetPosition().x, hit.Position.y, pObj->GetPosition().z);
+			// 接地オブジェクト群
+			// 接地オブジェクト毎に計算する。
+			for (auto pObj : onGroundObjectArray) {
+				// 壁
+				{
+					VECTOR rayOrigin = VAdd(pObj->GetPosition(), VScale(VUp, 120));
+					VECTOR rayEnd = VAdd(rayOrigin, VScale(pObj->GetForward(), 30.0f));
+
+					auto hit = HitCheck_Line_Triangle(
+						rayOrigin, rayEnd,
+						vertexs[0], vertexs[1], vertexs[2]);
+
+					// 当たっていたら壁で止める
+					if (hit.HitFlag) {
+						pObj->SetPosition(
+							hit.Position.x + pObj->GetForward().x * 30,
+							pObj->GetPosition().y,
+							hit.Position.z + pObj->GetForward().z * 30
+						);
+						break;
+					}
+				}
+				// 床
+				{
+					VECTOR rayOrigin = VAdd(pObj->GetPosition(), VScale(VUp, 120));
+					VECTOR rayEnd = VAdd(pObj->GetPosition(), VScale(VDown, 150));
+					auto hit = HitCheck_Line_Triangle(
+						rayOrigin, rayEnd,
+						vertexs[0], vertexs[1], vertexs[2]
+					);
+
+					// 当たっていたら地面に乗せる
+					if (hit.HitFlag) {
+						pObj->SetPosition(
+							pObj->GetPosition().x,
+							hit.Position.y,
+							pObj->GetPosition().z
+						);
+					}
 				}
 			}
 		}
 	}
-#if 0
-	int sum = 0;
-	for (int i = 0; i < MV1GetTriangleListNum(modelHandle); i++) {
-		// これで対象モデルのポリゴンの合計数が計算できる
-		sum += MV1GetTriangleListPolygonNum(modelHandle, i);
-	}
-	printfDx(L"%d\n", sum);
-#endif
+	// 位置、回転、拡縮のセット
+	MV1SetPosition(modelHandle, position);
+	MV1SetRotationXYZ(modelHandle, VScale(rotation, DX_PI_F / 180.0f));
+	MV1SetScale(modelHandle, scale);
 }
 
 void Stage::Render()
@@ -66,6 +90,5 @@ void Stage::Render()
 
 void Stage::Register(GameObject* _pObj)
 {
-	// VECTOR型の変数に地形の影響を受けるオブジェクトを登録する
 	onGroundObjectArray.push_back(_pObj);
 }

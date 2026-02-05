@@ -1,147 +1,227 @@
-#include <climits>
 #include "Player.h"
 #include "../../../Manager/InputManager.h"
-#include "../../Camera/Camera.h"
+#include "../../../Component/Collider.h"
+#include "../../UI/UIbase.h"
 
-/// <summary>
-/// プレイヤーコンストラクタ
-/// </summary>
-/// <param name="_pos"></param>
-Player::Player(VECTOR _pos) 
-	: Character(_pos, "player")
-	, key(0)
-{
+#include "../../Camera/Camera.h"
+#include "../../../Manager/EffectManager.h"
+
+
+// コンストラクタの実体
+/*
+* @brief	コンストラクタ
+* @param[in]	VECTOR _pos = VZero	初期化する座標
+*/
+Player::Player(VECTOR _pos)
+	:Character(_pos, "Player")
+	, isAttacking(false)
+	, pWeapon(nullptr) {
+
 	Start();
 }
 
-/// <summary>
-/// プレイヤーデストラクタ
-/// </summary>
-Player::~Player()
-{
+Player::~Player() {
+	delete pWeapon;
 }
 
-/// <summary>
-/// 初期化処理
-/// </summary>
-void Player::Start()
-{
+/**
+* @function		Start
+* @brief		初期化処理
+*/
+void Player::Start() {
+	// 非表示だったら初期化しない
 	if (!isVisible) {
 		return;
 	}
 
+
+	// int uiHandle = LoadGraph("Res/UI/hp.png");
+
+	//HpUi* pUi = new HpUi(this, uiHandle, VAdd(position, VGet(0, 200, 0)), 200, 50);
+	//pUi->Render();
+
+	// DrawBillboard3D(VAdd(this->position, VGet(0, 200, 0)), 0.5f, 0.5f, 200, 0, uiHandle, true);
+
+	// Z軸方向を180度回転させる
 	rotation.y = 180;
 }
-
-/// <summary>
-/// データ更新処理
-/// </summary>
-void Player::Update()
-{
+/**
+* @function		Update
+* @brief		更新処理
+* @tips			純粋仮想関数で実装する
+*/
+void Player::Update() {
 	if (!isVisible) {
 		return;
 	}
 
+	InputManager* input = InputManager::GetInstance();
+
 	VECTOR inputVec = VZero;
-	InputManager* xinput = InputManager::GetInstance();
-	short xAxis;
-	short yAxis;
 
-	// 現フレームのキー入力状況を取得する
-	xinput->GetLeftStick(&xAxis, &yAxis);
+	// spherePositionを入力によって変更するプログラム
+	if (input->IsKey(KEY_INPUT_W)) {
+		inputVec = VAdd(inputVec, VForward);
+	}
+	if (input->IsKey(KEY_INPUT_A)) {
+		inputVec = VAdd(inputVec, VLeft);
+	}
+	if (input->IsKey(KEY_INPUT_S)) {
+		inputVec = VAdd(inputVec, VBack);
+	}
+	if (input->IsKey(KEY_INPUT_D)) {
+		inputVec = VAdd(inputVec, VRight);
+	}
 
-	// 移動方向がカメラの方向に影響されるように修正する必要がある 
-	// 矢印キーでも、左スティックでも動くように調整
-	{
-		// 手前
-		if (xinput->IsButton(XINPUT_BUTTON_DPAD_DOWN) || yAxis < SHRT_MIN  / 2 || xinput->IsKey(KEY_INPUT_S)) {
-			key = 1;
-			inputVec = VAdd(inputVec, VBack);
-			//direction = DOWN;
-		}
-		// 奥
-		if (xinput->IsButton(XINPUT_BUTTON_DPAD_UP) || yAxis > SHRT_MAX / 2 || xinput->IsKey(KEY_INPUT_W)) {
-			key = 1;
-			inputVec = VAdd(inputVec, VForward);
-			//direction = UP;
-		}
-		// 左
-		if (xinput->IsButton(XINPUT_BUTTON_DPAD_LEFT) || xAxis < SHRT_MIN / 2 || xinput->IsKey(KEY_INPUT_A)) {
-			key = 1;
-			inputVec = VAdd(inputVec, VLeft);
-			//direction = LEFT;
-		}
-		// 右
-		if (xinput->IsButton(XINPUT_BUTTON_DPAD_RIGHT) || xAxis > SHRT_MAX / 2 || xinput->IsKey(KEY_INPUT_D)) {
-			key = 1;
-			inputVec = VAdd(inputVec, VRight);
-			//direction = RIGHT;
-		}
+	if (input->IsKeyDown(KEY_INPUT_SPACE)) {
+		isAttacking = true;
+		pAnimator->Play(2);
+	}
 
-		if (VSquareSize(inputVec) == 0) {
-			key = 0;
-		}
+	if (pAnimator->GetCurrentAnimation() != 2) {
+		isAttacking = false;
+		pWeapon->setIsAttacking(false);
+	}
 
-		// キーが入力されている場合に走るアニメーションを再生し
-		// キーが入力されていない場合は停止アニメーションを再生する
-		if (key == 0) {
-			if (running == true) {
-				running = false;
-				pAnimator->Play(0);
-			}
+
+
+	// 攻撃中でなければ
+	if (!isAttacking) {
+		// 入力があれば
+		if (VSquareSize(inputVec) >= 0.01f) {
+			// 入力ベクトルの正規化
+			inputVec = VNorm(inputVec);
+
+
+			// カメラからみた移動する方向ベクトル
+			VECTOR moveDirection = VZero;
+
+#if 0	// 三角関数で計算する場合
+
+			// xz平面の回転として考える -> 2次元の回転として扱える
+			// 回転後の座標をx'z'、回転する前の座標x zとしたとき
+			// x' = x * cosθ - z * sinθ
+			// z' = x * sinθ + z * cosθ
+			// θ = カメラのy軸回転 -> camera.rotation.y
+
+			float theta = Deg2Rad(Camera::main->GetRotation().y);
+
+			// 座標系の違いからX,Zの値を入れ替える
+			float Z = inputVec.z * cosf(theta) - inputVec.x * sinf(theta);
+			float X = inputVec.z * sinf(theta) + inputVec.x * cosf(theta);
+
+			// 移動方向を計算結果で初期化
+			moveDirection = VGet(X, 0, Z);
+
+			//{
+			//	// XZ平面の原点から見た傾き（tanθ）を求める
+			//	float tanTheta = X / Z;
+			//	// tanθからθのみを求めたい -> （逆三角関数）atanを使う。
+			//	atan(tanTheta);
+			//}
+			// 上のブロックを一発で出す関数
+			// Rad2Deg(atan2f(X, Z));
+
+			// 自身のy軸回転を計算した値に変更する。
+			rotation.y = Rad2Deg(atan2f(X, Z)) + 180.0f;
+
+
+#else	// 行列で計算する場合
+
+			// DxLibにて行列用の型がある。MATRIX型
+			// 4行4列で全ての値がfloat型
+			// カメラの軸回転を行列で取りたい
+			// カメラの回転行列を取得する
+			//float thetaX = Deg2Rad(Camera::main->GetRotation().x);
+			float thetaY = Deg2Rad(Camera::main->GetRotation().y);
+			//float thetaZ = Deg2Rad(Camera::main->GetRotation().z);
+
+			//MATRIX mRotX = MGetRotX(thetaX);	// カメラのX軸回転行列
+			MATRIX mRotY = MGetRotY(thetaY);	// カメラのX軸回転行列
+			//MATRIX mRotZ = MGetRotZ(thetaZ);	// カメラのX軸回転行列
+
+			//// 何かと掛け算としても値が変更されないのが「単位行列」
+
+			//// X>Y>Zの順で回転行列を作成する
+			//MATRIX mRotXYZ = MMult(MMult(mRotX, mRotY), mRotZ);
+
+			//// 拡縮行列
+			//MATRIX mScale = MGetScale(scale);
+
+			//// 平行移動行列
+			//MATRIX mTranslate = MGetTranslate(position);
+
+			//// 行列の乗算は合成できる
+			//// 回転行列 -> 拡縮行列 ->平行移動行列の順番でかけ合わせる
+			//matrix = MMult(MMult(mRotXYZ, mScale), mTranslate);
+			// これがunityやゲームプログラミングで使用される4x4の行列
+
+			// 移動方向を計算結果で初期化
+			moveDirection = VTransform(inputVec, mRotY);
+
+
+			rotation.y = Rad2Deg(atan2f(moveDirection.x, moveDirection.z)) + 180.0f;
+
+#endif
+
+
+			// 計算した入力ベクトルを加算する
+			//	position = VAdd(position, VScale(inputVec, 10.0f));
+			// 計算した移動方向ベクトルを加算する
+			position = VAdd(position, VScale(moveDirection, 10.0f));
+
+			// 移動するアニメーション再生
+			pAnimator->Play(1, 0.2f);
 		}
 		else {
-			if (running == false) {
-				running = true;
-				pAnimator->Play(1, 0.2f);
-			}
+			pAnimator->Play(0);
 		}
 	}
-	// 正規化したベクトルを作成して、移動力を掛けた値を現在の位置に足す。
-	// ゼロベクトルを渡すと正規化できないと判断しALL-1.0fを返すのでキー入力があった場合のみ実行
-	VECTOR NormVec = VZero;
-	VECTOR moveDirection = VZero;
-	if (key == 1) {
-		NormVec = VNorm(inputVec);
-		key = 0;
-
-		// カメラから見た方向に移動する方向ベクトルの変数を作成
-		// カメラのy軸回転を取得
-		float thetaY = Deg2Rad(Camera::main->GetRotation().y);
-		// カメラのY軸回転を元に行列を作成
-		MATRIX mRot = MGetRotY(thetaY);
-
-		// 行列をベクトルに変換
-		moveDirection = VTransform(inputVec, mRot);
-
-		rotation.y = Rad2Deg(atan2f(moveDirection.x, moveDirection.z)) + 180;
-		position = VAdd(position, VScale(moveDirection, 10.0f));
-
-		//// 移動方向に向ける（VGetの引数二つ目のY(0～4の整数を取る)にラジアンの90度*方向を掛ける。）
-		//// 現在だとキー入力に対した直角しか回転できないので移動方向へ向けるようにする
-		//// →atanでxとyのベクトルから角度を取得して格納
-		// MV1SetRotationXYZ(modelHandle, VGet(0.0f, atan2f(moveDirection.x, moveDirection.z) + DX_PI_F, 0.0f));
-		
-	}
-
-	// アニメーターの更新
 	pAnimator->Update();
-	// scaleの初期化がVZeroだったので縮尺0%で表示されていたので動かなかった(表示されていなかった)
-	// VOneで初期化することで表示された
+
 	GameObject::Update();
 	MV1SetMatrix(modelHandle, matrix);
 
-}
+	if (pWeapon != nullptr) {
+		pWeapon->Update();
+	}
 
-/// <summary>
-/// 描画処理
-/// </summary>
-void Player::Render()
-{
+
+}
+/**
+* @function		Render
+* @brief		描画処理
+* @tips			純粋仮想関数で実装する
+*/
+void Player::Render() {
 	if (!isVisible) {
 		return;
 	}
 
+	// モデルの描画
 	MV1DrawModel(modelHandle);
+	// 武器の描画
+	if (pWeapon != nullptr) {
+		pWeapon->Render();
+	}
+
+	VECTOR UIPosition = VAdd(position, VGet(-100, -200, 0));
+
+	DrawBox(UIPosition.x, UIPosition.y, UIPosition.x + 200, UIPosition.y + 100, green, true);
+
+}
+
+void Player::OnTriggerEnter(Collider* _pCol) {
+	if (_pCol->GetGameObject()->GetTag() == "Goblin") {
+		// _pCol->GetGameObject()->SetVisible(false);
+		Camera::main->Shake(2, 0.5f);
+		EffectManager::GetInstance()->Instantiate("BossDeath", position);
+	}
+}
+
+void Player::OnTriggerStay(Collider* _pCol) {
+}
+
+void Player::OnTriggerExit(Collider* _pCol) {
 
 }

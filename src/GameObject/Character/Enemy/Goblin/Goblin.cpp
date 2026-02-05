@@ -1,8 +1,13 @@
 #include "Goblin.h"
-#include <cmath>
+#include "../../../../Manager/InputManager.h"
+#include "../../../../Component/Collider.h"
 
-Goblin::Goblin(VECTOR _pos)
-	:Character(_pos, "Goblin")
+/// <summary>
+/// コンストラクタ
+/// </summary>
+/// <param name="_pos"></param>
+Goblin::Goblin(VECTOR _pos) :
+	Character(_pos, "Goblin")
 	, pWeapon(nullptr)
 	, wayPoints()
 	, index(0)
@@ -10,83 +15,67 @@ Goblin::Goblin(VECTOR _pos)
 	Start();
 }
 
-Goblin::~Goblin()
-{
+Goblin::~Goblin() {
 
 }
 
-void Goblin::Start()
-{
+/// <summary>
+/// 初期化処理
+/// </summary>
+void Goblin::Start() {
 	if (!isVisible) {
 		return;
 	}
 
-	//移動する座標を決定する
-	wayPoints.push_back(VGet(-1000.0f, 0.0f, -1000.0f));	// 画面左手前
-	wayPoints.push_back(VGet(-1000.0f, 0.0f, 1000.0f));	// 画面左奥
-	wayPoints.push_back(VGet(1000.0f, 0.0f, 1000.0f));		// 画面右奥
-	wayPoints.push_back(VGet(1000.0f, 0.0f, -1000.0f));	// 画面右手前
+	wayPoints.push_back(VGet(-1000.0f, 50.0f, -1000.0f));
+	wayPoints.push_back(VGet(-1000.0f, 50.0f, 1000.0f));
+	wayPoints.push_back(VGet(1000.0f, 50.0f, 1000.0f));
+	wayPoints.push_back(VGet(1000.0f, 50.0f, -1000.0f));
 }
 
-void Goblin::Update()
-{
+/// <summary>
+/// 更新処理
+/// </summary>
+void Goblin::Update() {
+
 	if (!isVisible) {
 		return;
-	}
-
-	// 現在の目的地と現在の座標の差を計算する
-	VECTOR tempVec = VSub(wayPoints[index], position);
-	// 現在地を保存しておく
-	VECTOR beforePos = position;
-
-	if (tempVec.x > 0) {
-		// 座標の差がプラスであれば、+方向に移動
-		position = VAdd(position, VGet(MOVE_SPEED, 0, 0));
-	}
-	else if (tempVec.x < 0) {
-		// 座標の差がマイナスであれば、-方向に移動
-		position = VSub(position, VGet(MOVE_SPEED, 0, 0));
-	}
-
-	if (tempVec.z > 0) {
-		// 座標の差がプラスであれば、+方向に移動
-		position = VAdd(position, VGet(0, 0, MOVE_SPEED));
-	}
-	else if (tempVec.z < 0) {
-		// 座標の差がマイナスであれば、-方向に移動
-		position = VSub(position, VGet(0, 0, MOVE_SPEED));
-	}
-
-	// 前回座標から移動先座標を引いて移動方向ベクトルを取得する
-	VECTOR subPos = VSub(beforePos, position);
-	// ベクトルの方向から回転角度を算出する
-	rotation.y = Rad2Deg(atan2f(subPos.x, subPos.z));
-
-	// 絶対値が1000を超えたら切り返しにしてみる
-	if (abs(position.x) >= 1000 && abs(position.z) >= 1000) {
-		index++;
-		index = index % wayPoints.size();
 	}
 
 	pAnimator->Update();
+
+	//MV1SetPosition(modelHandle, position);
+	//MV1SetRotationXYZ(modelHandle, VScale(rotation, DX_PI_F / 180.0f));
+	//MV1SetScale(modelHandle, scale);
 
 	if (pWeapon != nullptr) {
 		pWeapon->Update();
 	}
 
+	// 行列を求める
+	// pCollider->Update();
 	GameObject::Update();
+
+	
 	MV1SetMatrix(modelHandle, matrix);
+
 }
 
-void Goblin::Render()
-{
+/// <summary>
+/// 描画処理
+/// </summary>
+void Goblin::Render() {
+
 	if (!isVisible) {
 		return;
 	}
 
+	//モデルの描写
 	MV1DrawModel(modelHandle);
 
 	if (pWeapon != nullptr) {
 		pWeapon->Render();
 	}
+
 }
+

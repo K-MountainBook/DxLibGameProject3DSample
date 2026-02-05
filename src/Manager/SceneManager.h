@@ -1,78 +1,77 @@
 #pragma once
-#ifndef UNIQUE_SCENEMANAGER
-#define UNIQUE_SCENEMANAGER
-
-
 #include "../Definition.h"
-#include <string>
-
-/// <summary>
-/// シーン管理クラス（シングルトン）
-/// </summary>
 class SceneManager
 {
+#pragma region シングルトンのデータ構造
 private:
 	static SceneManager* pInstance;
 
-private:
-
+private:	// コンストラクタとデストラクタ
+	/*
+	* @brief コンストラクタ
+	* @tips  外部で生成されないようにアクセス修飾子をprivateにする。
+	*/
 	SceneManager();
 
+	/*
+	* @brief デストラクタ
+	*/
 	~SceneManager() = default;
 
-public:
-
+public:		// コピーと譲渡の禁止
 	SceneManager(const SceneManager&) = delete;
 	SceneManager(SceneManager&&) = delete;
 
 	SceneManager& operator = (const SceneManager&) = delete;
 	SceneManager& operator = (SceneManager&&) = delete;
 
-private:
+private:	// 静的メンバ関数
+	/*
+	* @function	CreateInstance
+	* @brief	自身のインスタンスを生成する。
+	*/
 	static void CreateInstance();
 
-public:
+public:		// 静的メンバ関数
+	/*
+	* @function GetInstance
+	* @brief	自身のインスタンスを取得する唯一の手段
+	* @return	InputManager*	自身のインスタンスのアドレス
+	*/
 	static SceneManager* GetInstance();
 
+	/*
+	* @function	DestroyInstance
+	* @brief	自身のインスタンスを破棄する
+	*/
 	static void DestroyInstance();
 
-	
-private:
-	// メンバ変数
-	class BaseScene* pCurrentScene;
-	SceneType current;
-	SceneType next;
 
-public:
+#pragma endregion
+private:	//	メンバ変数
+	class BaseScene* pCurrentScene;			// 現在のシーン
+	SceneType current;						// 現在のシーン番号
+	SceneType next;							// 次のシーン番号
+
+
+public:		// メンバ関数
+
 	void Update();
+
 	void Render();
+
+	/*
+	* @funtion	LoadScene
+	* @brief	シーン遷移
+	*/
 	void LoadScene();
 
-public:
+public:		// アクセッサ
+
+	/*
+	* @function SetNext
+	*/
 	void SetNext(SceneType _next);
 
-	std::wstring GetCurrentScene() {
-		std::wstring temp = L"";
-		switch (current)
-		{
-		case SceneType::Title:
-			temp = L"Title";
-			break;
-		case SceneType::Game:
-			temp = L"Game";
-			break;
-		case SceneType::Clear:
-			temp = L"Clear";
-			break;
-		case SceneType::GameOver:
-			temp = L"GameOver";
-			break;
-		default:
-			break;
-		}
-		return temp;
-	}
 };
 
-
-#endif // !UNIQUE SCENEMANAGER

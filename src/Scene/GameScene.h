@@ -1,37 +1,29 @@
 #pragma once
 #include "BaseScene.h"
-
-/// <summary>
-/// ゲームシーン
-/// </summary>
 class GameScene : public BaseScene
 {
 protected:
-	int playerModel;
-	int enemyModel;
-	int stageModel;
-	int playerWeaponModel;
-	int enemyWeaponModel;
+	int playerModel;				// プレイヤーモデルハンドラ
+	int playerWeaponModel;			// プレイヤー武器モデルハンドラ
+	int goblinModel;				// 敵モデルハンドラ
+	int goblinWeaponModel;			// 敵武器モデルハンドラ
+	int stageModel;					// ステージハンドラ
 
-	int shadowMapHandle;
-	const VECTOR shadowOffset = VGet(512, 512, 512);
+	int shadowMapHandle;			// シャドウマップハンドラ
+	const VECTOR shadowOffset = VGet(512, 512, 512);	// 影の描画調整用
 
-	GameObject* pPlayer;
+	
+	GameObject* pPlayer;				// 影描画中心点のため
 
 public:
-	/// <summary>
-	/// コンストラクタ
-	/// </summary>
+	// コンストラクタ
 	GameScene();
-
-	/// <summary>
-	/// デストラクタ
-	/// </summary>
+	// デストラクタ
 	~GameScene();
-
 public:
-	void Start() override;
+	void Start()  override;
 	void Update() override;
 	void Render() override;
 };
+
 
